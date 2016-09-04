@@ -1,0 +1,17 @@
+Bradford Smith (bsmith8)
+CS 631 HW 1 Code Reading
+09/02/2016
+
+- I created this file in Vim.
+- I compared the differences in implementation of `kill` and `echo`
+
+
+I chose them because I thought it would be interesting to learn how `kill`
+communicates with different processes and after reading through `kill` I
+thought `echo` would be a simpler bit of code to read.
+
+I downloaded the NetBSD sources from
+<http://cvsweb.netbsd.org/bsdweb.cgi/src/bin> and I downloaded the Linux (GNU)
+sources from <http://git.savannah.gnu.org/cgit/coreutils.git/tree/src/>.
+
+I have learned ___
