@@ -1,6 +1,7 @@
 Bradford Smith (bsmith8)
 CS 631 HW 1 Code Reading
-09/02/2016
+09/04/2016
+------------------------
 
 - I created this file in Vim.
 - I compared the differences in implementation of `kill` and `echo`
@@ -14,4 +15,67 @@ I downloaded the NetBSD sources from
 <http://cvsweb.netbsd.org/bsdweb.cgi/src/bin> and I downloaded the Linux (GNU)
 sources from <http://git.savannah.gnu.org/cgit/coreutils.git/tree/src/>.
 
-I have learned ___
+
+Kill
+----
+
+After looking through the sources for `kill` I have noticed that the Linux
+implementation is harder to read. Linux makes use of much more pre-processor
+conditionals than NetBSD, while the NetBSD implementation has them they seem to
+be used more for controlling "non-code aspects" such as linting or whether it
+has access to the shell builtin.
+
+An example of Linux's unreadability is it's consolidation of `switch` statement
+`case` lines to produce something that looks like this:
+
+>    /* Fall through.  */
+>  case 'A': case 'B': case 'C': case 'D': case 'E':
+>  case 'F': case 'G': case 'H': case 'I': case 'J':
+>  case 'K': /*case 'L':*/ case 'M': case 'N': case 'O':
+>  case 'P': case 'Q': case 'R': case 'S': case 'T':
+>  case 'U': case 'V': case 'W': case 'X': case 'Y':
+>  case 'Z':
+
+Which even with the comment declaring the use of "fall through" still looks
+messy and possibly confusing. Another example is Linux's use of a `goto`
+statement.
+
+A somewhat interesting note is that both implementations rely on the `kill`
+system call to actually send the signals to the processes.
+
+I think that the NetBSD `printsignals` function taking in a `FILE` pointer is a
+neat idea so that it can be used to print to `stderr` or `stdout` easily. The
+Linux code seems to have abstracted out into an `error` function or just prints
+to `stdout` using `printf`.
+
+
+Echo
+----
+
+Opening the sources for `echo` surprised me at first because the NetBSD
+implementation is much smaller than the Linux one. I quickly realized this was
+because NetBSD `echo` only accepts one option flag which is 'n' for whether or
+not to include a newline, other than that all it does is call `printf` and
+`putchar` while it has arguments.
+
+I found it interesting that while NetBSD used `printf` to echo the actual
+arguments the Linux implementation relied on using `fputs` and `putchar` but
+still used `printf` for errors and help messages.
+
+The Linux source still contained hard to read `switch` and `goto` statements
+but had much less pre-processor directives than the code for `kill` did. Another
+confusing bit was some unexplained pointer math, I'm assuming it has something
+to do with producing printable ASCII characters but I'm not exactly sure.
+
+>  if ('0' <= *s && *s <= '7')
+>    c = c * 8 + (*s++ - '0');
+>  if ('0' <= *s && *s <= '7')
+>    c = c * 8 + (*s++ - '0');
+
+I'm also not sure why they chose to do the same operation twice in a row, I'm
+guessing it might be slightly faster than using a loop but I would be interested
+in learning the reason why.
+
+I would also be interested to see the performance differences (if any) between
+the NetBSD implementation and the Linux implementation because of the use of
+`printf` vs `putchar` and `fputs`.
