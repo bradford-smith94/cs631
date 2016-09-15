@@ -1,0 +1,66 @@
+.TH tcp 1 "14 September 2016" "version 0.0"
+
+.SH NAME
+tcp - trivially copy a file
+
+.SH SYNOPSIS
+.B tcp
+.I source target
+
+.SH DESCRIPTION
+The
+.B tcp
+utility copies the contents of the
+.I source
+to
+.I target.
+.PP
+If
+.I target
+is a directory,
+.B tcp
+will copy
+.I source
+into this directory.
+
+.SH EXAMPLES
+The following examples show common usage:
+
+.PP
+tcp file1 file2
+
+.PP
+tcp file1 dir
+
+.PP
+tcp file1 dir/file2
+
+.PP
+tcp file1 dir/subdir/subsubdir/file2
+
+.SH EXIT STATUS
+.B tcp
+exits 0 on success, and >0 if an error occurred.
+
+.SH SEE ALSO
+tcpm(1), lseek(2), read(2), write(2)
+
+.SH NOTES
+The code for the
+.B tcp
+utility is, of course, well-formatted according to the guidelines found at
+.I http://www.cs.stevens.edu/~jschauma/631/style.
+The program can be compiled using the
+.I -Wall
+flags without any errors or warnings on
+.I linux-lab.cs.stevens.edu.
+
+.SH HISTORY
+The
+.B tcp
+program was first assigned as the first programming assignment for the class
+CS765 "Advanced Programming in the UNIX Environment" at Stevens Institute of
+Technology at least since around 2005.
+
+.SH BUGS
+Well, let's see...

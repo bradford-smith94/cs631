@@ -1,0 +1,64 @@
+.TH tcpm 1 "14 September 2016" "version 0.0"
+
+.SH NAME
+tcpm - trivially copy a file via mmap/memcpy
+
+.SH SYNOPSIS
+.B tcpm
+.I source target
+
+.SH DESCRIPTION
+The
+.B tcpm
+utility copies the contents of the
+.I source
+to
+.I target.
+That is, behaves entirely the smae as tcp(1).
+.PP
+Unlike tcp(1),
+.B tcpm
+uses mmap(2) and memcpy(2) instead of read(2) and write(2), which is why ic can
+be rewarded with up to 10 extra credit points.
+
+.SH EXAMPLES
+The following examples show common usage:
+
+.PP
+tcpm file1 file2
+
+.PP
+tcpm file1 dir
+
+.PP
+tcpm file1 dir/file2
+
+.PP
+tcpm file1 dir/subdir/subsubdir/file2
+
+.SH EXIT STATUS
+.B tcpm
+exits 0 on success, and >0 if an error occurred.
+
+.SH SEE ALSO
+tcp(1), lseek(2), mmap(2), memcpy(2)
+
+.SH NOTES
+The code for the
+.B tcpm
+utility is, of course, well-formatted according to the guidelines found at
+.I http://www.cs.stevens.edu/~jschauma/631/style.
+The program can be compiled using the
+.I -Wall
+flags without any errors or warnings on
+.I linux-lab.cs.stevens.edu.
+
+.SH HISTORY
+The
+.B tcpm
+program was first assigned as the first programming assignment for extra credit
+for the class CS765 "Advanced Programming in the UNIX Environment" at Stevens
+Institute of Technology at least since around 2005.
+
+.SH BUGS
+Well, let's see...
