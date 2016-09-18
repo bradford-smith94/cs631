@@ -1,15 +1,16 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 HW 2
-# 09/16/2016
+# 09/18/2016
 ################################################################################
 
 AUTHOR=bsmith8
 PROJECT=hw2
 CC=gcc
 RM=rm -f
+IOSIZE=$(shell stat -c "%o" Makefile)
 LDLIBS=
 LDFLAGS+=
-CFLAGS+=
+CFLAGS+= -DBUF_SIZE=$(IOSIZE)
 CPPFLAGS+= -Wall -pedantic-errors
 DBFLGS= -g -DDEBUG
 # implicit compiling rules:
