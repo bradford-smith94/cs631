@@ -22,17 +22,17 @@
 
 int main(int argc, char** argv)
 {
-    char* buf;          //copy buffer
-    char* dest;         //destination arg
-    char* fdest;        //full destination path
-    char* src;          //source arg
-    int dfd;            //destination file descriptor
-    int n;              //num bytes read/write
-    int sfd;            //source file descriptor
-    struct stat* dstat; //destination stat output
-    struct stat* sstat; //source stat output
+    char* buf;          /* copy buffer */
+    char* dest;         /* destination arg */
+    char* fdest;        /* full destination path */
+    char* src;          /* source arg */
+    int dfd;            /* destination file descriptor */
+    int n;              /* num bytes read/write */
+    int sfd;            /* source file descriptor */
+    struct stat* dstat; /* destination stat output */
+    struct stat* sstat; /* source stat output */
 
-    if (argc < 3) //expecting a [src] and [dest]
+    if (argc < 3) /* expecting a [src] and [dest] */
     {
         fprintf(stderr, "%s: missing arguments\n", argv[0]);
         fprintf(stderr, "usage: %s [src] [dest]\n", argv[0]);
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    //if dest exists and is a directory
+    /* if dest exists and is a directory */
     if ((stat(dest, dstat) == 0) && ((dstat->st_mode & S_IFMT) == S_IFDIR))
     {
         fdest = (char*)malloc((strlen(dest) + strlen(src) + 1) * sizeof(char));
