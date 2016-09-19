@@ -1,6 +1,6 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 HW 2
-# 09/18/2016
+# 09/19/2016
 ################################################################################
 
 AUTHOR=bsmith8
@@ -39,5 +39,5 @@ fclean: clean
 re: fclean all
 
 tar: fclean
-	tar -cvf $(AUTHOR)-$(PROJECT).tar --transform 's/^\./bsmith8/' ./*
+	tar -cvf $(AUTHOR)-$(PROJECT).tar --transform 's/^\./bsmith8/' --exclude 'testcp.sh' ./*
 

@@ -1,0 +1,28 @@
+Bradford Smith (bsmith8)
+CS 631 HW 2 README
+09/19/2016
+========================
+
+The directory `man1/` contains man pages (transcribed from the given) of the
+spec for the programs, the plan was to have the Makefile install the man pages
+but I ran out of time to figure out an unpriviledged (i.e. non root) install
+process for the man pages. Nevertheless they are left included in my submission
+and can be viewed using `man -l <file>`.
+
+The included Makefile will define `BUF_SIZE` to be the result of `stat -c "%o"
+Makefile` at compile time in order to have a (somewhat) portable scheme for
+determining the efficient I/O size, this will probably fail on non-GNU systems
+for two reasons:
+
+    1. it makes use of (GNU) make's `shell` builtin
+    2. the `stat` command that it runs uses the GNU/Linux format options
+
+However, this too is included in my submission because it runs on the linux-lab
+and the Makefile was an optional component for the assignment. If compiling
+without the Makefile `BUF_SIZE` can be defined at compile time, but if it is not
+a default value of 2048 was chosen.
+
+Finally, my source code contains various "debugging" statements surrounded by
+preprocessor conditionals checking for `DEBUG`. There is an included Makefile
+target ("debug") which will enable these statements, they are included in my
+submission to show that I have done (at least some) testing on my code.

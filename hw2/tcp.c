@@ -1,4 +1,4 @@
-/* Bradford Smith
+/* Bradford Smith (bsmith8)
  * CS 631 HW 2 tcp.c
  * 09/19/2016
  */
@@ -13,9 +13,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#ifndef PATH_SEP
 #define PATH_SEP '/'
-#endif
 
 #ifndef BUF_SIZE
 #define BUF_SIZE 2048
