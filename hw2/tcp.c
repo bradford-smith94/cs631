@@ -5,6 +5,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,6 +23,7 @@
 
 int main(int argc, char** argv)
 {
+    char* bsrc;         /* base source (just filename) */
     char* buf;          /* copy buffer */
     char* dest;         /* destination arg */
     char* fdest;        /* full destination path */
@@ -47,6 +49,12 @@ int main(int argc, char** argv)
 
     src = argv[1];
     dest = argv[2];
+
+#ifdef DEBUG
+    fprintf(stderr, "[DEBUG]\tsource: [%s] dest: [%s]\n",
+            src,
+            dest);
+#endif
 
     if ((sstat = (struct stat*)malloc(sizeof(struct stat))) == NULL)
     {
@@ -84,7 +92,8 @@ int main(int argc, char** argv)
     /* if dest exists and is a directory */
     if ((stat(dest, dstat) == 0) && ((dstat->st_mode & S_IFMT) == S_IFDIR))
     {
-        fdest = (char*)malloc((strlen(dest) + strlen(src) + 1) * sizeof(char));
+        bsrc = basename(strdup(src));
+        fdest = (char*)malloc((strlen(dest) + strlen(bsrc) + 1) * sizeof(char));
         if (fdest == NULL)
         {
             fprintf(stderr, "%s: unable to malloc destination filename: %s\n",
@@ -93,13 +102,17 @@ int main(int argc, char** argv)
             return 1;
         }
 
-        if ((sprintf(fdest, "%s%c%s", dest, PATH_SEP, src)) < 0)
+        if ((sprintf(fdest, "%s%c%s", dest, PATH_SEP, bsrc)) < 0)
         {
             fprintf(stderr, "%s: unable to create destination filename: %s\n",
                     argv[0],
                     strerror(errno));
             return 1;
         }
+#ifdef DEBUG
+        fprintf(stderr, "[DEBUG]\tdest is a directory, full dest: [%s]\n",
+                fdest);
+#endif
     }
     else
     {
