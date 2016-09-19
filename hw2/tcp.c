@@ -141,7 +141,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    if ((dfd = open(fdest, O_WRONLY|O_CREAT, 00644)) < 0)
+    if ((dfd = open(fdest, O_WRONLY|O_CREAT|O_TRUNC, 00644)) < 0)
     {
         fprintf(stderr, "%s: unable to open '%s': %s\n",
                 argv[0],
