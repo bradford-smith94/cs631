@@ -113,7 +113,6 @@ int main(int argc, char** argv)
                     strerror(errno));
             (void)free(sstat);
             (void)free(dstat);
-            (void)free(bsrc);
             return 1;
         }
 
@@ -124,7 +123,6 @@ int main(int argc, char** argv)
                     strerror(errno));
             (void)free(sstat);
             (void)free(dstat);
-            (void)free(bsrc);
             (void)free(fdest);
             return 1;
         }
@@ -144,8 +142,6 @@ int main(int argc, char** argv)
                     strerror(errno));
             (void)free(sstat);
             (void)free(dstat);
-            if (bsrc != NULL)
-                (void)free(bsrc);
             return 1;
         }
     }
@@ -164,8 +160,6 @@ int main(int argc, char** argv)
                 dest);
         (void)free(sstat);
         (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
         (void)free(fdest);
         return 1;
     }
@@ -178,8 +172,6 @@ int main(int argc, char** argv)
                 strerror(errno));
         (void)free(sstat);
         (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
         (void)free(fdest);
         return 1;
     }
@@ -192,8 +184,6 @@ int main(int argc, char** argv)
                 strerror(errno));
         (void)free(sstat);
         (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
         (void)free(fdest);
 
         (void)close(dfd);
@@ -207,8 +197,6 @@ int main(int argc, char** argv)
                 strerror(errno));
         (void)free(sstat);
         (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
         (void)free(fdest);
 
         (void)close(dfd);
@@ -225,8 +213,6 @@ int main(int argc, char** argv)
                     strerror(errno));
             (void)free(sstat);
             (void)free(dstat);
-            if (bsrc != NULL)
-                (void)free(bsrc);
             (void)free(fdest);
             (void)free(buf);
 
@@ -242,8 +228,6 @@ int main(int argc, char** argv)
                 strerror(errno));
         (void)free(sstat);
         (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
         (void)free(fdest);
         (void)free(buf);
 
@@ -254,8 +238,6 @@ int main(int argc, char** argv)
 
     (void)free(sstat);
     (void)free(dstat);
-    if (bsrc != NULL)
-        (void)free(bsrc);
     (void)free(fdest);
     (void)free(buf);
 

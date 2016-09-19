@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -22,15 +23,15 @@
 int main(int argc, char** argv)
 {
     char* bsrc;         /* base source (just filename) */
-    char* buf;          /* copy buffer */
     char* dest;         /* destination arg */
     char* fdest;        /* full destination path */
     char* src;          /* source arg */
     int dfd;            /* destination file descriptor */
-    int n;              /* num bytes read/write */
     int sfd;            /* source file descriptor */
     struct stat* dstat; /* destination stat output */
     struct stat* sstat; /* source stat output */
+    void* dmap;         /* destination memory map */
+    void* smap;         /* source memory map */
 
     if (argc < 3) /* expecting a [src] and [dest] */
     {
@@ -113,7 +114,6 @@ int main(int argc, char** argv)
                     strerror(errno));
             (void)free(sstat);
             (void)free(dstat);
-            (void)free(bsrc);
             return 1;
         }
 
@@ -124,7 +124,6 @@ int main(int argc, char** argv)
                     strerror(errno));
             (void)free(sstat);
             (void)free(dstat);
-            (void)free(bsrc);
             (void)free(fdest);
             return 1;
         }
@@ -144,8 +143,6 @@ int main(int argc, char** argv)
                     strerror(errno));
             (void)free(sstat);
             (void)free(dstat);
-            if (bsrc != NULL)
-                (void)free(bsrc);
             return 1;
         }
     }
@@ -164,13 +161,13 @@ int main(int argc, char** argv)
                 dest);
         (void)free(sstat);
         (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
         (void)free(fdest);
         return 1;
     }
 
-    if ((dfd = open(fdest, O_WRONLY|O_CREAT|O_TRUNC, 00644)) < 0)
+    /* NOTE: mmap with PROT_WRITE and MAP_SHARED requires O_RDWR */
+    /* O_TRUNC will set file size to zero if it already exists */
+    if ((dfd = open(fdest, O_RDWR|O_CREAT|O_TRUNC, 00644)) < 0)
     {
         fprintf(stderr, "%s: unable to open '%s': %s\n",
                 argv[0],
@@ -178,8 +175,18 @@ int main(int argc, char** argv)
                 strerror(errno));
         (void)free(sstat);
         (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
+        (void)free(fdest);
+        return 1;
+    }
+
+    /* make sure destination file has space for source file */
+    if (ftruncate(dfd, sstat->st_size) < 0)
+    {
+        fprintf(stderr, "%s: unable to ftruncate destination file: %s\n",
+                argv[0],
+                strerror(errno));
+        (void)free(sstat);
+        (void)free(dstat);
         (void)free(fdest);
         return 1;
     }
@@ -192,74 +199,64 @@ int main(int argc, char** argv)
                 strerror(errno));
         (void)free(sstat);
         (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
         (void)free(fdest);
 
         (void)close(dfd);
         return 1;
     }
 
-    if ((buf = (char*)malloc((BUF_SIZE + 1) * sizeof(char))) == NULL)
+    /* mmap will fail if size is zero */
+    if (sstat->st_size != 0)
     {
-        fprintf(stderr, "%s: unable to malloc: %s\n",
-                argv[0],
-                strerror(errno));
-        (void)free(sstat);
-        (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
-        (void)free(fdest);
-
-        (void)close(dfd);
-        (void)close(sfd);
-        return 1;
-    }
-
-    while ((n = read(sfd, buf, BUF_SIZE)) > 0)
-    {
-        if ((n = write(dfd, buf, n)) < 0)
+        if ((dmap = mmap(NULL, sstat->st_size, PROT_WRITE, MAP_SHARED, dfd, 0)) == MAP_FAILED)
         {
-            fprintf(stderr, "%s: unable to write: %s\n",
+            fprintf(stderr, "%s: unable to map destination file to memory: %s\n",
                     argv[0],
                     strerror(errno));
             (void)free(sstat);
             (void)free(dstat);
-            if (bsrc != NULL)
-                (void)free(bsrc);
             (void)free(fdest);
-            (void)free(buf);
 
             (void)close(dfd);
             (void)close(sfd);
             return 1;
         }
-    }
-    if (n < 0)
-    {
-        fprintf(stderr, "%s: unable to read: %s\n",
-                argv[0],
-                strerror(errno));
-        (void)free(sstat);
-        (void)free(dstat);
-        if (bsrc != NULL)
-            (void)free(bsrc);
-        (void)free(fdest);
-        (void)free(buf);
 
-        (void)close(dfd);
-        (void)close(sfd);
-        return 1;
+        if ((smap = mmap(NULL, sstat->st_size, PROT_READ, MAP_PRIVATE, sfd, 0)) == MAP_FAILED)
+        {
+            fprintf(stderr, "%s: unable to map source file to memory: %s\n",
+                    argv[0],
+                    strerror(errno));
+            (void)free(sstat);
+            (void)free(dstat);
+            (void)free(fdest);
+
+            (void)close(dfd);
+            (void)close(sfd);
+
+            (void)munmap(dmap, sstat->st_size);
+            return 1;
+        }
+
+#ifdef DEBUG
+        fprintf(stderr, "[DEBUG]\tBefore memcpy\n");
+#endif
+
+        (void)memcpy(dmap, smap, sstat->st_size);
+
+#ifdef DEBUG
+        fprintf(stderr, "[DEBUG]\tAfter memcpy\n");
+#endif
     }
 
     (void)free(sstat);
     (void)free(dstat);
-    if (bsrc != NULL)
-        (void)free(bsrc);
     (void)free(fdest);
-    (void)free(buf);
 
     (void)close(dfd);
     (void)close(sfd);
+
+    (void)munmap(dmap, sstat->st_size);
+    (void)munmap(smap, sstat->st_size);
     return 0;
 }
