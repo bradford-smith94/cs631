@@ -92,6 +92,7 @@ int main(int argc, char** argv)
     /* if dest exists and is a directory */
     if ((stat(dest, dstat) == 0) && ((dstat->st_mode & S_IFMT) == S_IFDIR))
     {
+        /* TODO: free bsrc */
         bsrc = basename(strdup(src));
         fdest = (char*)malloc((strlen(dest) + strlen(bsrc) + 1) * sizeof(char));
         if (fdest == NULL)
@@ -123,6 +124,21 @@ int main(int argc, char** argv)
                     strerror(errno));
             return 1;
         }
+    }
+
+#ifdef DEBUG
+    fprintf(stderr, "[DEBUG]\tsource inode: [%d] dest inode: [%d]\n",
+            sstat->st_ino,
+            dstat->st_ino);
+#endif
+
+    if ((sstat->st_dev) == (dstat->st_dev) && (sstat->st_ino) == (dstat->st_ino))
+    {
+        fprintf(stderr, "%s: '%s' and '%s' are the same file\n",
+                argv[0],
+                src,
+                dest);
+        return 1;
     }
 
     if ((dfd = open(fdest, O_WRONLY|O_CREAT, 00644)) < 0)
