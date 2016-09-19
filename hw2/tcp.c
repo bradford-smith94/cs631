@@ -1,6 +1,6 @@
 /* Bradford Smith
  * CS 631 HW 2 tcp.c
- * 09/18/2016
+ * 09/19/2016
  */
 
 #include <errno.h>
@@ -69,6 +69,7 @@ int main(int argc, char** argv)
         fprintf(stderr, "%s: unable to malloc: %s\n",
                 argv[0],
                 strerror(errno));
+        (void)free(sstat);
         return 1;
     }
 
@@ -78,6 +79,8 @@ int main(int argc, char** argv)
                 argv[0],
                 src,
                 strerror(errno));
+        (void)free(sstat);
+        (void)free(dstat);
         return 1;
     }
 
@@ -86,20 +89,33 @@ int main(int argc, char** argv)
         fprintf(stderr, "%s: '%s' is a directory\n",
                 argv[0],
                 src);
+        (void)free(sstat);
+        (void)free(dstat);
         return 1;
     }
 
     /* if dest exists and is a directory */
     if ((stat(dest, dstat) == 0) && ((dstat->st_mode & S_IFMT) == S_IFDIR))
     {
-        /* TODO: free bsrc */
-        bsrc = basename(strdup(src));
+        if ((bsrc = basename(strdup(src))) == NULL)
+        {
+            fprintf(stderr, "%s: unable to malloc source filename: %s\n",
+                    argv[0],
+                    strerror(errno));
+            (void)free(sstat);
+            (void)free(dstat);
+            return 1;
+        }
+
         fdest = (char*)malloc((strlen(dest) + strlen(bsrc) + 1) * sizeof(char));
         if (fdest == NULL)
         {
             fprintf(stderr, "%s: unable to malloc destination filename: %s\n",
                     argv[0],
                     strerror(errno));
+            (void)free(sstat);
+            (void)free(dstat);
+            (void)free(bsrc);
             return 1;
         }
 
@@ -108,6 +124,10 @@ int main(int argc, char** argv)
             fprintf(stderr, "%s: unable to create destination filename: %s\n",
                     argv[0],
                     strerror(errno));
+            (void)free(sstat);
+            (void)free(dstat);
+            (void)free(bsrc);
+            (void)free(fdest);
             return 1;
         }
 #ifdef DEBUG
@@ -117,11 +137,17 @@ int main(int argc, char** argv)
     }
     else
     {
+        bsrc = NULL;
+
         if ((fdest = strdup(dest)) == NULL)
         {
             fprintf(stderr, "%s: unable to malloc destination filename: %s\n",
                     argv[0],
                     strerror(errno));
+            (void)free(sstat);
+            (void)free(dstat);
+            if (bsrc != NULL)
+                (void)free(bsrc);
             return 1;
         }
     }
@@ -138,6 +164,11 @@ int main(int argc, char** argv)
                 argv[0],
                 src,
                 dest);
+        (void)free(sstat);
+        (void)free(dstat);
+        if (bsrc != NULL)
+            (void)free(bsrc);
+        (void)free(fdest);
         return 1;
     }
 
@@ -147,6 +178,11 @@ int main(int argc, char** argv)
                 argv[0],
                 dest,
                 strerror(errno));
+        (void)free(sstat);
+        (void)free(dstat);
+        if (bsrc != NULL)
+            (void)free(bsrc);
+        (void)free(fdest);
         return 1;
     }
 
@@ -156,6 +192,13 @@ int main(int argc, char** argv)
                 argv[0],
                 src,
                 strerror(errno));
+        (void)free(sstat);
+        (void)free(dstat);
+        if (bsrc != NULL)
+            (void)free(bsrc);
+        (void)free(fdest);
+
+        (void)close(dfd);
         return 1;
     }
 
@@ -164,6 +207,14 @@ int main(int argc, char** argv)
         fprintf(stderr, "%s: unable to malloc: %s\n",
                 argv[0],
                 strerror(errno));
+        (void)free(sstat);
+        (void)free(dstat);
+        if (bsrc != NULL)
+            (void)free(bsrc);
+        (void)free(fdest);
+
+        (void)close(dfd);
+        (void)close(sfd);
         return 1;
     }
 
@@ -174,6 +225,15 @@ int main(int argc, char** argv)
             fprintf(stderr, "%s: unable to write: %s\n",
                     argv[0],
                     strerror(errno));
+            (void)free(sstat);
+            (void)free(dstat);
+            if (bsrc != NULL)
+                (void)free(bsrc);
+            (void)free(fdest);
+            (void)free(buf);
+
+            (void)close(dfd);
+            (void)close(sfd);
             return 1;
         }
     }
@@ -182,16 +242,26 @@ int main(int argc, char** argv)
         fprintf(stderr, "%s: unable to read: %s\n",
                 argv[0],
                 strerror(errno));
+        (void)free(sstat);
+        (void)free(dstat);
+        if (bsrc != NULL)
+            (void)free(bsrc);
+        (void)free(fdest);
+        (void)free(buf);
+
+        (void)close(dfd);
+        (void)close(sfd);
         return 1;
     }
 
-    (void)free(buf);
-    (void)free(fdest);
-    (void)free(dstat);
     (void)free(sstat);
+    (void)free(dstat);
+    if (bsrc != NULL)
+        (void)free(bsrc);
+    (void)free(fdest);
+    (void)free(buf);
 
     (void)close(dfd);
     (void)close(sfd);
-
     return 0;
 }
