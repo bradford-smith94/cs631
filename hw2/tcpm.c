@@ -16,10 +16,6 @@
 
 #define PATH_SEP '/'
 
-#ifndef BUF_SIZE
-#define BUF_SIZE 2048
-#endif
-
 int main(int argc, char** argv)
 {
     char* bsrc;         /* base source (just filename) */

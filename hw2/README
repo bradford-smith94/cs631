@@ -20,7 +20,7 @@ for two reasons:
 However, this too is included in my submission because it runs on the linux-lab
 and the Makefile was an optional component for the assignment. If compiling
 without the Makefile `BUF_SIZE` can be defined at compile time, but if it is not
-a default value of 2048 was chosen.
+a default value of 4096 was chosen.
 
 Finally, my source code contains various "debugging" statements surrounded by
 preprocessor conditionals checking for `DEBUG`. There is an included Makefile
