@@ -1,10 +1,12 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 Midterm
-# 09/20/2016
+# 09/23/2016
 ################################################################################
 
 AUTHOR=bsmith8
 PROJECT=midterm
+SRC=ls.c
+OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
 LDLIBS=
@@ -17,7 +19,7 @@ DBFLGS= -g -DDEBUG
 
 all: ls
 
-ls: ls.o
+ls: $(OBJ)
 
 debug: fclean
 debug: CPPFLAGS+= $(DBFLGS)
