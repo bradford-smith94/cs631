@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm ls.c
- * 09/23/2016
+ * 09/25/2016
  */
 
 #include "ls.h"
@@ -12,8 +12,17 @@
 
 int main(int argc, char** argv)
 {
-    int i;
-    char** targets;
+    int i;              /* loop counter */
+    int j;              /* loop counter */
+    char** targets;     /* the files/directories to print */
+
+    /* make sure all options are initially zero */
+    bzero(gl_opts.upper, 26);
+    bzero(gl_opts.lower, 26);
+    bzero(gl_opts.digit, 10);
+
+    /* set program name */
+    gl_progname = argv[0];
 
     for (i = 1; i < argc; i++)
     {
@@ -23,6 +32,11 @@ int main(int argc, char** argv)
 #ifdef DEBUG
             fprintf(stderr, "[DEBUG]\tOption: [%s]\n", &argv[i][1]);
 #endif
+            /* loop through option string with j and defineOpt() each char */
+            for (j = 0; j < strlen(&argv[i][1]); j++)
+            {
+                defineOpt(argv[i][1 + j]);
+            }
         }
         else
             break;
@@ -36,7 +50,7 @@ int main(int argc, char** argv)
         if ((targets = (char**)malloc(2 * sizeof(char*))) == NULL)
         {
             fprintf(stderr, "%s: unable to malloc: %s\n",
-                    argv[0],
+                    gl_progname,
                     strerror(errno));
             return 1;
         }
@@ -44,13 +58,13 @@ int main(int argc, char** argv)
         if ((targets[0] = (char*)malloc(strlen(".") * sizeof(char))) == NULL)
         {
             fprintf(stderr, "%s: unable to malloc: %s\n",
-                    argv[0],
+                    gl_progname,
                     strerror(errno));
             free(targets);
             return 1;
         }
 
-        /* TODO: check this */strcpy(targets[0], ".");
+        /* TODO: check this? */strcpy(targets[0], ".");
         targets[1] = NULL;
     }
     else
@@ -58,17 +72,27 @@ int main(int argc, char** argv)
         if ((targets = (char**)malloc((argc - i + 1) * sizeof(char*))) == NULL)
         {
             fprintf(stderr, "%s: unable to malloc: %s\n",
-                    argv[0],
+                    gl_progname,
                     strerror(errno));
             return 1;
         }
 
-        for (i; i < argc; i++)
+        /* leave `i` where it is */
+        for (j = 0; i < argc; i++, j++) /* Note: `j` is incremented here */
         {
-            /* TODO: malloc each target and strcpy it */
+            if ((targets[j] = (char*)malloc(strlen(argv[i]) * sizeof(char))) == NULL)
+            {
+                fprintf(stderr, "%s: unable to maloc: %s\n",
+                        gl_progname,
+                        strerror(errno));
+                free(targets);
+                return 1;
+            }
         }
-        /* TODO: add final NULL to targets */
+        targets[j] = NULL;
     }
+
+    /* Note: targets is now a list of files/directories terminated by a NULL */
 
     return 0;
 }
