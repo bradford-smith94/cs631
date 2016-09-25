@@ -22,5 +22,6 @@ int     main(int, char**);
 
 void    defineOpt(char);
 int     hasOpt(char);
+void    print(char**);
 
 #endif /* _LS_H_ */

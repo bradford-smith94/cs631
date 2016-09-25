@@ -93,6 +93,10 @@ int main(int argc, char** argv)
     }
 
     /* Note: targets is now a list of files/directories terminated by a NULL */
+    print(targets);
 
+    for (i = 0; targets[i] != NULL; i++)
+        free(targets[i]);
+    free(targets);
     return 0;
 }

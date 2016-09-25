@@ -5,7 +5,7 @@
 
 AUTHOR=bsmith8
 PROJECT=midterm
-SRC=ls.c defineOpt.c hasOpt.c
+SRC=ls.c defineOpt.c hasOpt.c print.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
