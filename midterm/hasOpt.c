@@ -1,6 +1,6 @@
-/* Bradford Smith
+/* Bradford Smith (bsmith8)
  * CS 631 Midterm hasOpt.c
- * 09/25/2016
+ * 09/26/2016
  */
 
 #include "ls.h"

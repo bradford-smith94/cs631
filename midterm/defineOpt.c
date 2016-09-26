@@ -1,13 +1,13 @@
-/* Bradford Smith
+/* Bradford Smith (bsmith8)
  * CS 631 Midterm defineOpt.c
- * 09/25/2016
+ * 09/26/2016
  */
 
 #include "ls.h"
 
-#include <strings.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 
 /* pre: none, takes in a char 'opt'
  * post: set 'opt' in the global options structure

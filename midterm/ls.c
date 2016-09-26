@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm ls.c
- * 09/25/2016
+ * 09/26/2016
  */
 
 #include "ls.h"
@@ -88,6 +88,8 @@ int main(int argc, char** argv)
                 free(targets);
                 return 1;
             }
+
+            /* TODO: check this? */strcpy(targets[j], argv[i]);
         }
         targets[j] = NULL;
     }
