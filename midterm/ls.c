@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm ls.c
- * 09/26/2016
+ * 09/29/2016
  */
 
 #include "ls.h"
@@ -9,36 +9,124 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 int main(int argc, char** argv)
 {
-    int i;              /* loop counter */
-    int j;              /* loop counter */
-    char** targets;     /* the files/directories to print */
-
-    /* make sure all options are initially zero */
-    bzero(gl_opts.upper, 26);
-    bzero(gl_opts.lower, 26);
-    bzero(gl_opts.digit, 10);
+    int i;
+    int j;
+    char opt;
+    char** targets;
 
     /* set program name */
     gl_progname = argv[0];
 
+    /* initialize global option variables to zero */
+    gl_opts.All             = 0;
+    gl_opts.all             = 0;
+    gl_opts.Columns         = 0;
+    gl_opts.ctime_sorted    = 0;
+    gl_opts.directories     = 0;
+    gl_opts.F_symbols       = 0;
+    gl_opts.f_unsorted      = 0;
+    gl_opts.human_sizes     = 0;
+    gl_opts.inodes          = 0;
+    gl_opts.kilobytes       = 0;
+    gl_opts.long_print      = 0;
+    gl_opts.number_ids      = 0;
+    gl_opts.q_printing      = 0;
+    gl_opts.Recursive       = 0;
+    gl_opts.reverse_sorted  = 0;
+    gl_opts.Size_sorted     = 0;
+    gl_opts.system_blocks   = 0;
+    gl_opts.t_mtime_sorted  = 0;
+    gl_opts.u_atime_sorted  = 0;
+    gl_opts.w_raw           = 0;
+    gl_opts.x_columns       = 0;
+    gl_opts.one_column      = 0;
+
+    while ((opt = getopt(argc, argv, "AaCcdFfhiklnqRrSstuwx1")) != -1)
+    {
+        switch (opt)
+        {
+            case 'A':
+                gl_opts.All = 1;
+                break;
+            case 'a':
+                gl_opts.all = 1;
+                break;
+            case 'C':
+                gl_opts.Columns = 1;
+                break;
+            case 'c':
+                gl_opts.ctime_sorted = 1;
+                break;
+            case 'd':
+                gl_opts.directories = 1;
+                break;
+            case 'F':
+                gl_opts.F_symbols = 1;
+                break;
+            case 'f':
+                gl_opts.f_unsorted = 1;
+                break;
+            case 'h':
+                gl_opts.human_sizes = 1;
+                break;
+            case 'i':
+                gl_opts.inodes = 1;
+                break;
+            case 'k':
+                gl_opts.kilobytes = 1;
+                break;
+            case 'l':
+                gl_opts.long_print = 1;
+                break;
+            case 'n':
+                gl_opts.number_ids = 1;
+                break;
+            case 'q':
+                gl_opts.q_printing = 1;
+                break;
+            case 'R':
+                gl_opts.Recursive = 1;
+                break;
+            case 'r':
+                gl_opts.reverse_sorted = 1;
+                break;
+            case 'S':
+                gl_opts.Size_sorted = 1;
+                break;
+            case 's':
+                gl_opts.system_blocks = 1;
+                break;
+            case 't':
+                gl_opts.t_mtime_sorted = 1;
+                break;
+            case 'u':
+                gl_opts.u_atime_sorted = 1;
+                break;
+            case 'w':
+                gl_opts.w_raw = 1;
+                break;
+            case 'x':
+                gl_opts.x_columns = 1;
+                break;
+            case '1':
+                gl_opts.one_column = 1;
+                break;
+            default:
+                fprintf(stderr, "%s: invalid option -- %c\n",
+                        gl_progname,
+                        opt);
+                return 1;
+        }
+    }
+
+    /* move i to the first non-option argument */
     for (i = 1; i < argc; i++)
     {
-        /* if argument starts with a hypen it is an option */
-        if (argv[i][0] == '-')
-        {
-#ifdef DEBUG
-            fprintf(stderr, "[DEBUG]\tOption: [%s]\n", &argv[i][1]);
-#endif
-            /* loop through option string with j and defineOpt() each char */
-            for (j = 0; j < strlen(&argv[i][1]); j++)
-            {
-                defineOpt(argv[i][1 + j]);
-            }
-        }
-        else
+        if (argv[i][0] != '-')
             break;
     }
 

@@ -1,27 +1,42 @@
 /* Bradford Smith (bsmith8)
  * CS 631 midterm ls.h
- * 09/25/2016
+ * 09/29/2016
  */
 
 #ifndef _LS_H_
 #define _LS_H_
 
-#define ACCEPTED_OPTS "AaCcdFfhiklnqRrSstuwx1"
-
 /* global options structure */
 struct s_opts {
-    char upper[26];
-    char lower[26];
-    char digit[10];
+    /* use char as a true/false */
+    char All;
+    char all;
+    char Columns;
+    char ctime_sorted;
+    char directories;
+    char F_symbols;
+    char f_unsorted;
+    char human_sizes;
+    char inodes;
+    char kilobytes;
+    char long_print;
+    char number_ids;
+    char q_printing;
+    char Recursive;
+    char reverse_sorted;
+    char Size_sorted;
+    char system_blocks;
+    char t_mtime_sorted;
+    char u_atime_sorted;
+    char w_raw;
+    char x_columns;
+    char one_column;
 } gl_opts;
 
 /* global program name */
 char* gl_progname;
 
 int     main(int, char**);
-
-void    defineOpt(char);
-int     hasOpt(char);
 void    print(char**);
 
 #endif /* _LS_H_ */
