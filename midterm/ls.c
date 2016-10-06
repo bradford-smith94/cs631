@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm ls.c
- * 09/29/2016
+ * 10/06/2016
  */
 
 #include "ls.h"
@@ -49,6 +49,7 @@ int main(int argc, char** argv)
     {
         switch (opt)
         {
+            /* TODO: check overrides */
             case 'A':
                 gl_opts.All = 1;
                 break;
@@ -57,9 +58,14 @@ int main(int argc, char** argv)
                 break;
             case 'C':
                 gl_opts.Columns = 1;
+                gl_opts.long_print = 0; /* overrides l */
+                gl_opts.number_ids = 0; /* overrides n */
+                gl_opts.x_columns = 0; /* overrides x */
+                gl_opts.one_column = 0; /* overrides 1 */
                 break;
             case 'c':
                 gl_opts.ctime_sorted = 1;
+                gl_opts.u_atime_sorted = 0; /* c overrides u */
                 break;
             case 'd':
                 gl_opts.directories = 1;
@@ -72,21 +78,32 @@ int main(int argc, char** argv)
                 break;
             case 'h':
                 gl_opts.human_sizes = 1;
+                gl_opts.kilobytes = 0; /* h overrides k */
                 break;
             case 'i':
                 gl_opts.inodes = 1;
                 break;
             case 'k':
                 gl_opts.kilobytes = 1;
+                gl_opts.human_sizes = 0; /* k overrides h */
                 break;
             case 'l':
                 gl_opts.long_print = 1;
+                gl_opts.Columns = 0; /* overrides C */
+                gl_opts.number_ids = 0; /* overrides n */
+                gl_opts.x_columns = 0; /* overrides x */
+                gl_opts.one_column = 0; /* overrides 1 */
                 break;
             case 'n':
                 gl_opts.number_ids = 1;
+                gl_opts.Columns = 0; /* overrides C */
+                gl_opts.long_print = 0; /* overrides l */
+                gl_opts.x_columns = 0; /* overrides x */
+                gl_opts.one_column = 0; /* overrides 1 */
                 break;
             case 'q':
                 gl_opts.q_printing = 1;
+                gl_opts.w_raw = 0; /* q overrides w */
                 break;
             case 'R':
                 gl_opts.Recursive = 1;
@@ -105,15 +122,25 @@ int main(int argc, char** argv)
                 break;
             case 'u':
                 gl_opts.u_atime_sorted = 1;
+                gl_opts.ctime_sorted = 0; /* u overrides c */
                 break;
             case 'w':
                 gl_opts.w_raw = 1;
+                gl_opts.q_printing = 0; /* w overrides q */
                 break;
             case 'x':
                 gl_opts.x_columns = 1;
+                gl_opts.Columns = 0; /* overrides C */
+                gl_opts.long_print = 0; /* overrides l */
+                gl_opts.number_ids = 0; /* overrides n */
+                gl_opts.one_column = 0; /* overrides 1 */
                 break;
             case '1':
                 gl_opts.one_column = 1;
+                gl_opts.Columns = 0; /* overrides C */
+                gl_opts.long_print = 0; /* overrides l */
+                gl_opts.number_ids = 0; /* overrides n */
+                gl_opts.x_columns = 0; /* overrides x */
                 break;
             default:
                 fprintf(stderr, "%s: invalid option -- %c\n",
