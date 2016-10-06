@@ -5,7 +5,7 @@
 
 AUTHOR=bsmith8
 PROJECT=midterm
-SRC=ls.c init.c print.c
+SRC=ls.c init.c print.c sort.c swap.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f

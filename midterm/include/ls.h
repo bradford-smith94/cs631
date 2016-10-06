@@ -36,9 +36,12 @@ struct s_opts {
 /* global program name */
 char* gl_progname;
 
+
 int     main(int, char**);
 
 void    init(char*);
 void    print(char**);
+void    sort(char**);
+void    swap(char**, char**);
 
 #endif /* _LS_H_ */

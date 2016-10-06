@@ -37,6 +37,8 @@ void print(char** targets)
     if (gl_opts.one_column) fprintf(stderr, ">>\t1\n");
 #endif
 
+    sort(targets);
+
     for (i = 0; targets[i] != NULL; i++)
     {
         /* TODO: lots of checks and sorting */
