@@ -49,7 +49,6 @@ int main(int argc, char** argv)
     {
         switch (opt)
         {
-            /* TODO: check overrides */
             case 'A':
                 gl_opts.All = 1;
                 break;
