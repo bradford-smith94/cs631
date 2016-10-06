@@ -5,6 +5,9 @@
 
 #include "ls.h"
 
+#include <stdlib.h>
+#include <unistd.h>
+
 /* pre: none, takes in a char* progname
  * post: initializes global variables
  */
@@ -12,6 +15,17 @@ void init(char* progname)
 {
     /* set program name */
     gl_progname = progname;
+
+    if (getenv("BLOCKSIZE") != NULL)
+    {
+        if ((gl_blocksize = atoi(getenv("BLOCKSIZE"))) <= 0)
+            gl_blocksize = DEFAULT_BLOCKSIZE;
+    }
+    else
+        gl_blocksize = DEFAULT_BLOCKSIZE;
+
+    gl_timezone = getenv("TZ");
+    /* TODO: see tzset(3) */
 
     /* initialize global option variables to zero */
     gl_opts.All             = 0;
@@ -36,4 +50,21 @@ void init(char* progname)
     gl_opts.w_raw           = 0;
     gl_opts.x_columns       = 0;
     gl_opts.one_column      = 0;
+
+    if (isatty(/* stdout */1))
+    {
+        /* terminal defaults */
+        gl_opts.Columns = 1;
+        gl_opts.q_printing = 1;
+
+        gl_dir_size_summary = 1;
+    }
+    else
+    {
+        /* non-terminal defaults */
+        gl_opts.w_raw = 1;
+        gl_opts.one_column = 1;
+
+        gl_dir_size_summary = 0;
+    }
 }

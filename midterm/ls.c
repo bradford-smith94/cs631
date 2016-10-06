@@ -19,7 +19,6 @@ int main(int argc, char** argv)
     char** targets;
 
     /* initialize the global variables */
-    /* TODO: check environment variables */
     init(argv[0]);
 
     while ((opt = getopt(argc, argv, "AaCcdFfhiklnqRrSstuwx1")) != -1)

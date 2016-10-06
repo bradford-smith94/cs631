@@ -6,6 +6,8 @@
 #ifndef _LS_H_
 #define _LS_H_
 
+#define DEFAULT_BLOCKSIZE 512
+
 /* global options structure */
 struct s_opts {
     /* use char as a true/false */
@@ -33,8 +35,10 @@ struct s_opts {
     char one_column;
 } gl_opts;
 
-/* global program name */
 char* gl_progname;
+char gl_dir_size_summary;
+int gl_blocksize;
+char* gl_timezone;
 
 
 int     main(int, char**);
