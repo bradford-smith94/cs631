@@ -18,32 +18,8 @@ int main(int argc, char** argv)
     char opt;
     char** targets;
 
-    /* set program name */
-    gl_progname = argv[0];
-
-    /* initialize global option variables to zero */
-    gl_opts.All             = 0;
-    gl_opts.all             = 0;
-    gl_opts.Columns         = 0;
-    gl_opts.ctime_sorted    = 0;
-    gl_opts.directories     = 0;
-    gl_opts.F_symbols       = 0;
-    gl_opts.f_unsorted      = 0;
-    gl_opts.human_sizes     = 0;
-    gl_opts.inodes          = 0;
-    gl_opts.kilobytes       = 0;
-    gl_opts.long_print      = 0;
-    gl_opts.number_ids      = 0;
-    gl_opts.q_printing      = 0;
-    gl_opts.Recursive       = 0;
-    gl_opts.reverse_sorted  = 0;
-    gl_opts.Size_sorted     = 0;
-    gl_opts.system_blocks   = 0;
-    gl_opts.t_mtime_sorted  = 0;
-    gl_opts.u_atime_sorted  = 0;
-    gl_opts.w_raw           = 0;
-    gl_opts.x_columns       = 0;
-    gl_opts.one_column      = 0;
+    /* initialize the global variables */
+    init(argv[0]);
 
     while ((opt = getopt(argc, argv, "AaCcdFfhiklnqRrSstuwx1")) != -1)
     {
@@ -169,16 +145,15 @@ int main(int argc, char** argv)
             return 1;
         }
 
-        if ((targets[0] = (char*)malloc(strlen(".") * sizeof(char))) == NULL)
+        if ((targets[0] = strdup(".")) == NULL)
         {
-            fprintf(stderr, "%s: unable to malloc: %s\n",
+            fprintf(stderr, "%s: unable to strdup: %s\n",
                     gl_progname,
                     strerror(errno));
             free(targets);
             return 1;
         }
 
-        /* TODO: check this? */strcpy(targets[0], ".");
         targets[1] = NULL;
     }
     else
@@ -194,16 +169,17 @@ int main(int argc, char** argv)
         /* leave `i` where it is */
         for (j = 0; i < argc; i++, j++) /* Note: `j` is incremented here */
         {
-            if ((targets[j] = (char*)malloc(strlen(argv[i]) * sizeof(char))) == NULL)
+            if ((targets[j] = strdup(argv[i])) == NULL)
             {
-                fprintf(stderr, "%s: unable to maloc: %s\n",
+                fprintf(stderr, "%s: unable to strdup: %s\n",
                         gl_progname,
                         strerror(errno));
+
+                while (--j >= 0)
+                    free(targets[j]);
                 free(targets);
                 return 1;
             }
-
-            /* TODO: check this? */strcpy(targets[j], argv[i]);
         }
         targets[j] = NULL;
     }

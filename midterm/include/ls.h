@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
- * CS 631 midterm ls.h
- * 09/29/2016
+ * CS 631 Midterm ls.h
+ * 10/06/2016
  */
 
 #ifndef _LS_H_
@@ -37,6 +37,8 @@ struct s_opts {
 char* gl_progname;
 
 int     main(int, char**);
+
+void    init(char*);
 void    print(char**);
 
 #endif /* _LS_H_ */

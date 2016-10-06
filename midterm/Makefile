@@ -1,11 +1,11 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 Midterm
-# 09/29/2016
+# 10/06/2016
 ################################################################################
 
 AUTHOR=bsmith8
 PROJECT=midterm
-SRC=ls.c print.c
+SRC=ls.c init.c print.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
