@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm ls.c
- * 10/06/2016
+ * 10/07/2016
  */
 
 #include "ls.h"
@@ -125,18 +125,35 @@ int main(int argc, char** argv)
         }
     }
 
-    /* move i to the first non-option argument */
-    for (i = 1; i < argc; i++)
-    {
-        if (argv[i][0] != '-')
-            break;
-    }
+#ifdef DEBUG
+    fprintf(stderr, "[DEBUG]\tactive options:\n");
+    if (gl_opts.All) fprintf(stderr, ">>\tA\n");
+    if (gl_opts.all) fprintf(stderr, ">>\ta\n");
+    if (gl_opts.Columns) fprintf(stderr, ">>\tC\n");
+    if (gl_opts.ctime_sorted) fprintf(stderr, ">>\tc\n");
+    if (gl_opts.directories) fprintf(stderr, ">>\td\n");
+    if (gl_opts.F_symbols) fprintf(stderr, ">>\tF\n");
+    if (gl_opts.f_unsorted) fprintf(stderr, ">>\tf\n");
+    if (gl_opts.human_sizes) fprintf(stderr, ">>\th\n");
+    if (gl_opts.inodes) fprintf(stderr, ">>\ti\n");
+    if (gl_opts.kilobytes) fprintf(stderr, ">>\tk\n");
+    if (gl_opts.long_print) fprintf(stderr, ">>\tl\n");
+    if (gl_opts.number_ids) fprintf(stderr, ">>\tn\n");
+    if (gl_opts.q_printing) fprintf(stderr, ">>\tq\n");
+    if (gl_opts.Recursive) fprintf(stderr, ">>\tR\n");
+    if (gl_opts.reverse_sorted) fprintf(stderr, ">>\tr\n");
+    if (gl_opts.Size_sorted) fprintf(stderr, ">>\tS\n");
+    if (gl_opts.system_blocks) fprintf(stderr, ">>\ts\n");
+    if (gl_opts.t_mtime_sorted) fprintf(stderr, ">>\tt\n");
+    if (gl_opts.u_atime_sorted) fprintf(stderr, ">>\tu\n");
+    if (gl_opts.w_raw) fprintf(stderr, ">>\tw\n");
+    if (gl_opts.x_columns) fprintf(stderr, ">>\tx\n");
+    if (gl_opts.one_column) fprintf(stderr, ">>\t1\n");
+#endif
 
     /* no target file/directory specified use current dir */
-    if (i == argc)
+    if (optind == argc)
     {
-        /* TODO: might need getcwd */
-
         if ((targets = (char**)malloc(2 * sizeof(char*))) == NULL)
         {
             fprintf(stderr, "%s: unable to malloc: %s\n",
@@ -158,6 +175,7 @@ int main(int argc, char** argv)
     }
     else
     {
+        i = optind;
         if ((targets = (char**)malloc((argc - i + 1) * sizeof(char*))) == NULL)
         {
             fprintf(stderr, "%s: unable to malloc: %s\n",
@@ -185,6 +203,10 @@ int main(int argc, char** argv)
     }
 
     /* Note: targets is now a list of files/directories terminated by a NULL */
+
+    if (!gl_opts.f_unsorted)
+        sort(targets);
+
     print(targets);
 
     for (i = 0; targets[i] != NULL; i++)

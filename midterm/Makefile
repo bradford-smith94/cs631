@@ -1,6 +1,6 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 Midterm
-# 10/06/2016
+# 10/07/2016
 ################################################################################
 
 AUTHOR=bsmith8
@@ -27,6 +27,7 @@ debug: all
 
 clean:
 	$(RM) *.o
+	$(RM) *core*
 
 #full clean
 fclean: clean
