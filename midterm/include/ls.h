@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm ls.h
- * 10/06/2016
+ * 10/07/2016
  */
 
 #ifndef _LS_H_
@@ -38,7 +38,6 @@ struct s_opts {
 char* gl_progname;
 char gl_dir_size_summary;
 int gl_blocksize;
-char* gl_timezone;
 
 
 int     main(int, char**);

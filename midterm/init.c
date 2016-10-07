@@ -1,11 +1,12 @@
 /* Bradford Smith
  * CS 631 Midterm init.c
- * 10/06/2016
+ * 10/07/2016
  */
 
 #include "ls.h"
 
 #include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 
 /* pre: none, takes in a char* progname
@@ -24,8 +25,8 @@ void init(char* progname)
     else
         gl_blocksize = DEFAULT_BLOCKSIZE;
 
-    gl_timezone = getenv("TZ");
-    /* TODO: see tzset(3) */
+    /* handle TZ environment variable */
+    tzset();
 
     /* initialize global option variables to zero */
     gl_opts.All             = 0;
