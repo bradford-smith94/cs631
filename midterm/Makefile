@@ -5,11 +5,11 @@
 
 AUTHOR=bsmith8
 PROJECT=midterm
-SRC=ls.c init.c print.c sort.c swap.c
+SRC=ls.c get_winsize.c init.c init_caps.c print.c sanitize.c sort.c swap.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
-LDLIBS=
+LDLIBS+= -ltermcap
 LDFLAGS+=
 CFLAGS+= -I./include
 CPPFLAGS+= -Wall -pedantic-errors

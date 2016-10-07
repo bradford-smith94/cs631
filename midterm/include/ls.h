@@ -38,13 +38,17 @@ struct s_opts {
 char* gl_progname;
 char gl_dir_size_summary;
 int gl_blocksize;
+char* gl_term_move;
 
 
-int     main(int, char**);
+int             main(int, char**);
 
-void    init(char*);
-void    print(char**);
-void    sort(char**);
-void    swap(char**, char**);
+struct winsize  get_winsize();
+void            init(char*);
+void            init_caps();
+void            print(char**);
+char*           sanitize(char*);
+void            sort(char**);
+void            swap(char**, char**);
 
 #endif /* _LS_H_ */

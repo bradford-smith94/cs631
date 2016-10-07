@@ -184,8 +184,7 @@ int main(int argc, char** argv)
             return 1;
         }
 
-        /* leave `i` where it is */
-        for (j = 0; i < argc; i++, j++) /* Note: `j` is incremented here */
+        for (j = 0; i < argc; i++, j++)
         {
             if ((targets[j] = strdup(argv[i])) == NULL)
             {

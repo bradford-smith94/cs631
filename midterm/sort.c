@@ -1,6 +1,6 @@
 /* Bradford Smith
  * CS 631 Midterm sort.c
- * 10/06/2016
+ * 10/07/2016
  */
 
 #include "ls.h"
@@ -24,6 +24,8 @@ void sort(char** list)
 
     /* XXX: to use swap give it the address of elements:
         swap(&(list[0]), &(list[1]));
+
+       TODO: c, r, S, t, u need to be checked here
     */
 
     for (i = 0; list[i] != NULL; i++)
@@ -36,5 +38,11 @@ void sort(char** list)
                     strerror(errno));
             exit(1);
         }
+
+        if (S_ISDIR(st.st_mode))
+        {
+        }
+        else
+            continue;
     }
 }

@@ -59,6 +59,8 @@ void init(char* progname)
         gl_opts.q_printing = 1;
 
         gl_dir_size_summary = 1;
+
+        init_caps();
     }
     else
     {
