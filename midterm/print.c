@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm print.c
- * 10/07/2016
+ * 10/08/2016
  */
 
 #include "ls.h"
@@ -14,7 +14,6 @@ void print(char** targets)
 {
     int i;
     int x;
-    int y;
     int len;
     struct winsize ws;
 
@@ -37,9 +36,8 @@ void print(char** targets)
                 if (x + len >= ws.ws_col)
                 {
                     x = 0;
-                    y++;
+                    printf("\n");
                 }
-                term_move(x, y);
                 printf("%s  ", targets[i]);
                 x += len + 2;
             }
@@ -47,6 +45,9 @@ void print(char** targets)
         else
         {
             /* veritical columns */
+            /* TODO: determine how many columns will fit, then iterate based on
+             * that number through targets, print same way as horizontal columns
+             */
         }
     }
     else if (gl_opts.one_column)
