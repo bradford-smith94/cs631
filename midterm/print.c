@@ -33,7 +33,11 @@ void print(char** targets)
             for (i = 0, x = 0; targets[i] != NULL; i++)
             {
                 len = strlen(targets[i]);
-                if (x + len >= ws.ws_col)
+                if (x >= ws.ws_col)
+                {
+                    x = 0;
+                }
+                else if (x + len >= ws.ws_col)
                 {
                     x = 0;
                     printf("\n");
@@ -41,6 +45,9 @@ void print(char** targets)
                 printf("%s  ", targets[i]);
                 x += len + 2;
             }
+
+            /* print final newline */
+            printf("\n");
         }
         else
         {
