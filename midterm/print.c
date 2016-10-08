@@ -5,26 +5,53 @@
 
 #include "ls.h"
 
+#include <sys/ioctl.h>
+
 #include <stdio.h>
+#include <string.h>
 
 void print(char** targets)
 {
     int i;
+    int x;
+    int y;
+    int len;
+    struct winsize ws;
 
     /* TODO: i, s, h, k flags need to be checked */
+    /* when s is checked also check gl_dir_size_summary */
 
-    for (i = 0; targets[i] != NULL; i++)
+    if (gl_opts.long_print || gl_opts.number_ids)
     {
-        if (gl_opts.long_print || gl_opts.number_ids)
+        /* TODO: n flag needs to be checked again in here */
+    }
+    else if (gl_opts.Columns || gl_opts.x_columns)
+    {
+        ws = get_winsize();
+        if (gl_opts.x_columns)
         {
-            /* TODO: n flag needs to be checked again in here */
+            /* horizontal columns */
+            for (i = 0, x = 0; targets[i] != NULL; i++)
+            {
+                len = strlen(targets[i]);
+                if (x + len >= ws.ws_col)
+                {
+                    x = 0;
+                    y++;
+                }
+                term_move(x, y);
+                printf("%s  ", targets[i]);
+                x += len + 2;
+            }
         }
-        else if (gl_opts.Columns || gl_opts.x_columns)
+        else
         {
-            /* TODO (optional) */
-            /* TODO: x (optional) flag needs to be checked again in here */
+            /* veritical columns */
         }
-        else if (gl_opts.one_column)
+    }
+    else if (gl_opts.one_column)
+    {
+        for (i = 0; targets[i] != NULL; i++)
         {
             if (gl_opts.q_printing)
                 printf("%s\n", sanitize(targets[i]));

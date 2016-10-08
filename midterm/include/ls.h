@@ -50,5 +50,6 @@ void            print(char**);
 char*           sanitize(char*);
 void            sort(char**);
 void            swap(char**, char**);
+void            term_move(int, int);
 
 #endif /* _LS_H_ */

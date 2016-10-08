@@ -7,10 +7,21 @@
 
 #include <sys/ioctl.h>
 
-struct winsize get_win_size()
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct winsize get_winsize()
 {
     struct winsize w;
-    ioctl(0, TIOCGWINSZ, &w);
+    if (ioctl(0, TIOCGWINSZ, &w) < 0)
+    {
+        fprintf(stderr, "%s: could not get window size: %s\n",
+                gl_progname,
+                strerror(errno));
+        exit(1);
+    }
 
     return w;
 }

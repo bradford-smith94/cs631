@@ -30,8 +30,10 @@ void init_caps()
         exit(1);
     }
 
-    if (!(gl_term_move = tgetstr("MOVE", (char**)&area)))
+    /* the move termcap */
+    if (!(gl_term_move = tgetstr("cm", (char**)&area)))
     {
-        fprintf(stderr, ":%s: unable to load termcap: MOVE\n", gl_progname);
+        fprintf(stderr, ":%s: unable to load termcap: cm (move)\n", gl_progname);
+        exit(1);
     }
 }
