@@ -23,7 +23,6 @@
  */
 int cmp(char* a, char* b)
 {
-    /* TODO: S, need to be checked here */
     struct stat sa;
     struct stat sb;
 
@@ -71,6 +70,11 @@ int cmp(char* a, char* b)
                 else if (sa.st_atim.tv_nsec != sb.st_atim.tv_nsec)
                     return sa.st_atim.tv_nsec > sb.st_atim.tv_nsec;
             }
+            else if (gl_opts.Size_sorted)
+            {
+                if (sa.st_size != sb.st_size)
+                    return sa.st_size > sb.st_size;
+            }
 
             /* fall back on lexicographical */
             return strcmp(b, a);
@@ -97,6 +101,11 @@ int cmp(char* a, char* b)
                     return sa.st_atim.tv_sec < sb.st_atim.tv_sec;
                 else if (sa.st_atim.tv_nsec != sb.st_atim.tv_nsec)
                     return sa.st_atim.tv_nsec < sb.st_atim.tv_nsec;
+            }
+            else if (gl_opts.Size_sorted)
+            {
+                if (sa.st_size != sb.st_size)
+                    return sa.st_size < sb.st_size;
             }
 
             /* fall back on lexicographical */
