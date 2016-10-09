@@ -1,6 +1,6 @@
 /* Bradford Smith
  * CS 631 Midterm sort.c
- * 10/07/2016
+ * 10/08/2016
  */
 
 #include "ls.h"
@@ -19,30 +19,26 @@
  */
 void sort(char** list)
 {
-    struct stat st;
     int i;
+    int j;
+    char* tmp;
 
     /* XXX: to use swap give it the address of elements:
         swap(&(list[0]), &(list[1]));
-
-       TODO: c, r, S, t, u need to be checked here
+       XXX: might not need swap
     */
 
-    for (i = 0; list[i] != NULL; i++)
+    for (i = 1; list[i] != NULL; i++)
     {
-        if (stat(list[i], &st) < 0)
-        {
-            fprintf(stderr, "%s: could not stat '%s': %s\n",
-                    gl_progname,
-                    list[i],
-                    strerror(errno));
-            exit(1);
-        }
+        tmp = list[i];
 
-        if (S_ISDIR(st.st_mode))
+        for (j = i - 1; j >= 0; j--)
         {
+            if (cmp(list[j], tmp) > 0)
+                list[j + 1] = list[j];
+            else
+                break;
         }
-        else
-            continue;
+        list[j + 1] = tmp;
     }
 }

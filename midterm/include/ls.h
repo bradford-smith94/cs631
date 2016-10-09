@@ -42,6 +42,7 @@ int gl_blocksize;
 
 int             main(int, char**);
 
+int             cmp(char*, char*);
 struct winsize  get_winsize();
 void            init(char*);
 void            init_caps();

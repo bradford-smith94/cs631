@@ -5,7 +5,7 @@
 
 AUTHOR=bsmith8
 PROJECT=midterm
-SRC=ls.c get_winsize.c init.c print.c sanitize.c sort.c swap.c
+SRC=ls.c cmp.c get_winsize.c init.c print.c sanitize.c sort.c swap.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
