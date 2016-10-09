@@ -23,7 +23,7 @@
  */
 int cmp(char* a, char* b)
 {
-    /* TODO: c, S, t, u need to be checked here */
+    /* TODO: S, need to be checked here */
     struct stat sa;
     struct stat sb;
 
@@ -49,13 +49,63 @@ int cmp(char* a, char* b)
         (!S_ISDIR(sa.st_mode) && !S_ISDIR(sb.st_mode)))
     {
         if (gl_opts.reverse_sorted)
+        {
+            if (gl_opts.ctime_sorted)
+            {
+                if (sa.st_ctim.tv_sec != sb.st_ctim.tv_sec)
+                    return sa.st_ctim.tv_sec > sb.st_ctim.tv_sec;
+                else if (sa.st_ctim.tv_nsec != sb.st_ctim.tv_nsec)
+                    return sa.st_ctim.tv_nsec > sb.st_ctim.tv_nsec;
+            }
+            else if (gl_opts.t_mtime_sorted)
+            {
+                if (sa.st_mtim.tv_sec != sb.st_mtim.tv_sec)
+                    return sa.st_mtim.tv_sec > sb.st_mtim.tv_sec;
+                else if (sa.st_mtim.tv_nsec != sb.st_mtim.tv_nsec)
+                    return sa.st_mtim.tv_nsec > sb.st_mtim.tv_nsec;
+            }
+            else if (gl_opts.u_atime_sorted)
+            {
+                if (sa.st_atim.tv_sec != sb.st_atim.tv_sec)
+                    return sa.st_atim.tv_sec > sb.st_atim.tv_sec;
+                else if (sa.st_atim.tv_nsec != sb.st_atim.tv_nsec)
+                    return sa.st_atim.tv_nsec > sb.st_atim.tv_nsec;
+            }
+
+            /* fall back on lexicographical */
             return strcmp(b, a);
+        }
         else
+        {
+            if (gl_opts.ctime_sorted)
+            {
+                if (sa.st_ctim.tv_sec != sb.st_ctim.tv_sec)
+                    return sa.st_ctim.tv_sec < sb.st_ctim.tv_sec;
+                else if (sa.st_ctim.tv_nsec != sb.st_ctim.tv_nsec)
+                    return sa.st_ctim.tv_nsec < sb.st_ctim.tv_nsec;
+            }
+            else if (gl_opts.t_mtime_sorted)
+            {
+                if (sa.st_mtim.tv_sec != sb.st_mtim.tv_sec)
+                    return sa.st_mtim.tv_sec < sb.st_mtim.tv_sec;
+                else if (sa.st_mtim.tv_nsec != sb.st_mtim.tv_nsec)
+                    return sa.st_mtim.tv_nsec < sb.st_mtim.tv_nsec;
+            }
+            else if (gl_opts.u_atime_sorted)
+            {
+                if (sa.st_atim.tv_sec != sb.st_atim.tv_sec)
+                    return sa.st_atim.tv_sec < sb.st_atim.tv_sec;
+                else if (sa.st_atim.tv_nsec != sb.st_atim.tv_nsec)
+                    return sa.st_atim.tv_nsec < sb.st_atim.tv_nsec;
+            }
+
+            /* fall back on lexicographical */
             return strcmp(a, b);
+        }
     }
     else if(S_ISDIR(sa.st_mode))
     {
-        /* reverse only gets taken into account if both are of the same type */
+        /* other flags only get taken into account if a and b are same type */
         return 1;
     }
     else
