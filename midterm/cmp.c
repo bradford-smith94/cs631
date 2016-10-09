@@ -1,6 +1,6 @@
 /* Bradford Smith
  * CS 631 Midterm cmp.c
- * 10/08/2016
+ * 10/09/2016
  */
 
 #include "ls.h"
@@ -23,7 +23,7 @@
  */
 int cmp(char* a, char* b)
 {
-    /* TODO: c, r, S, t, u need to be checked here */
+    /* TODO: c, S, t, u need to be checked here */
     struct stat sa;
     struct stat sb;
 
@@ -48,10 +48,14 @@ int cmp(char* a, char* b)
     if ((S_ISDIR(sa.st_mode) && S_ISDIR(sb.st_mode)) ||
         (!S_ISDIR(sa.st_mode) && !S_ISDIR(sb.st_mode)))
     {
-        return strcmp(a, b);
+        if (gl_opts.reverse_sorted)
+            return strcmp(b, a);
+        else
+            return strcmp(a, b);
     }
     else if(S_ISDIR(sa.st_mode))
     {
+        /* reverse only gets taken into account if both are of the same type */
         return 1;
     }
     else
