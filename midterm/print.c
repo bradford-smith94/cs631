@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm print.c
- * 10/08/2016
+ * 10/09/2016
  */
 
 #include "ls.h"
@@ -15,9 +15,10 @@ void print(char** targets)
     int i;
     int x;
     int len;
+    char* tmp;
     struct winsize ws;
 
-    /* TODO: i, s, h, k flags need to be checked */
+    /* TODO: i, s, h, k, F flags need to be checked */
     /* when s is checked also check gl_dir_size_summary */
 
     if (gl_opts.long_print || gl_opts.number_ids)
@@ -42,7 +43,13 @@ void print(char** targets)
                     x = 0;
                     printf("\n");
                 }
-                printf("%s  ", targets[i]);
+                if (gl_opts.q_printing)
+                {
+                    printf("%s  ", tmp = sanitize(targets[i]));
+                    free(tmp);
+                }
+                else
+                    printf("%s  ", targets[i]);
                 x += len + 2;
             }
 
@@ -62,7 +69,10 @@ void print(char** targets)
         for (i = 0; targets[i] != NULL; i++)
         {
             if (gl_opts.q_printing)
-                printf("%s\n", sanitize(targets[i]));
+            {
+                printf("%s\n", tmp = sanitize(targets[i]));
+                free(tmp);
+            }
             else
                 printf("%s\n", targets[i]);
         }

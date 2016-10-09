@@ -1,6 +1,6 @@
 /* Bradford Smith
  * CS 631 Midterm sanitize.c
- * 10/07/2016
+ * 10/09/2016
  */
 
 #include "ls.h"
@@ -26,7 +26,7 @@ char* sanitize(char* input)
     if (input != NULL)
     {
         len = strlen(input);
-        if ((output = (char*)malloc(len * sizeof(char))) == NULL)
+        if ((output = (char*)malloc((len + 1) * sizeof(char))) == NULL)
         {
             fprintf(stderr, "%s: unabel to malloc: %s\n",
                     gl_progname,
@@ -34,14 +34,14 @@ char* sanitize(char* input)
             exit(1);
         }
 
-        for (i = 0; input[i] != '\n'; i++)
+        for (i = 0; input[i] != '\0'; i++)
         {
             if (input[i] <= 31)
                 output[i] = '?';
             else
                 output[i] = input[i];
         }
-        output[i] = '\n';
+        output[i] = '\0';
     }
 
     return output;
