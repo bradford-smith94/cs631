@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm ls.c
- * 10/08/2016
+ * 10/10/2016
  */
 
 #include "ls.h"
@@ -172,6 +172,7 @@ int main(int argc, char** argv)
         }
 
         targets[1] = NULL;
+        gl_only_cwd = 1;
     }
     else
     {
@@ -203,13 +204,7 @@ int main(int argc, char** argv)
 
     /* Note: targets is now a list of files/directories terminated by a NULL */
 
-    /* TODO: some kind of traverse sort and print method to wrap everything
-     * nicely and handle recursion
-     */
-    if (!gl_opts.f_unsorted)
-        sort(targets);
-
-    print(targets);
+    traverse(targets);
 
     for (i = 0; targets[i] != NULL; i++)
         free(targets[i]);

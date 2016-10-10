@@ -59,6 +59,9 @@ void init(char* progname)
     gl_opts.x_columns       = 0;
     gl_opts.one_column      = 0;
 
+    /* flag if no operands are given */
+    gl_only_cwd = 0;
+
     if (geteuid() == 0)
     {
         /* super-user defaults */

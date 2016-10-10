@@ -46,6 +46,10 @@ void print(char** targets)
     struct passwd* tmp_pw;
     file_info* info;
 
+    /* handle if given nothing */
+    if (targets == NULL || targets[0] == NULL)
+        return;
+
     /* TODO: i, s, h, k, F flags need to be checked */
     /* when s is checked also check gl_dir_size_summary */
 
