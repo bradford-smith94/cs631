@@ -1,9 +1,11 @@
 /* Bradford Smith
  * CS 631 Midterm init.c
- * 10/09/2016
+ * 10/10/2016
  */
 
 #include "ls.h"
+
+#include <sys/types.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +58,12 @@ void init(char* progname)
     gl_opts.w_raw           = 0;
     gl_opts.x_columns       = 0;
     gl_opts.one_column      = 0;
+
+    if (geteuid() == 0)
+    {
+        /* super-user defaults */
+        gl_opts.All = 1;
+    }
 
     if (isatty(/* stdout */1))
     {
