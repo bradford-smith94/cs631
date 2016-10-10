@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm print.c
- * 10/09/2016
+ * 10/10/2016
  */
 
 #include "ls.h"
@@ -163,9 +163,43 @@ void print(char** targets)
         else
         {
             /* veritical columns */
-            /* TODO: determine how many columns will fit, then iterate based on
-             * that number through targets, print same way as horizontal columns
-             */
+
+            /* Note ';' loop intentionally empty */
+            for (i = 0, x = 0; targets[i] != NULL; x += strlen(targets[i]) + 2, i++);
+
+            /* if all items fit in one row */
+            if (x < ws.ws_col)
+            {
+                for (i = 0; targets[i] != NULL; i++)
+                {
+                    if (gl_opts.q_printing)
+                        name = sanitize(targets[i]);
+                    else
+                        name = strdup(targets[i]);
+
+                    printf("%s  ", name);
+                    free(name);
+                }
+
+                /* print final newline */
+                printf("\n");
+            }
+            else
+            {
+                /* TODO: multiple columns and multiple lines */
+
+                /* if only one column fits */
+                for (i = 0; targets[i] != NULL; i++)
+                {
+                    if (gl_opts.q_printing)
+                        name = sanitize(targets[i]);
+                    else
+                        name = strdup(targets[i]);
+
+                    printf("%s\n", name);
+                    free(name);
+                }
+            }
         }
     }
     else if (gl_opts.one_column)
