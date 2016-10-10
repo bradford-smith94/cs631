@@ -6,24 +6,127 @@
 #include "ls.h"
 
 #include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
+#include <bsd/string.h>
+#include <errno.h>
+#include <grp.h>
+#include <pwd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <unistd.h>
+
+typedef struct s_file {
+    unsigned long inode;
+    unsigned long blocksize;
+    char mode[12]; /* 12 is length returned by strmode(3) */
+    int num_links;
+    char* owner;
+    unsigned long uid;
+    char* group;
+    unsigned long gid;
+    unsigned long filesize;
+    struct timespec date_modified;
+} file_info;
 
 void print(char** targets)
 {
     int i;
     int x;
     int len;
-    char* tmp;
+    int num_targets;
+    char* name;
+    char date[13]; /* 3 for month, 2 for day, 6 for time, 2 spaces and null */
+    struct stat st;
     struct winsize ws;
+    struct group* tmp_gr;
+    struct passwd* tmp_pw;
+    file_info* info;
 
     /* TODO: i, s, h, k, F flags need to be checked */
     /* when s is checked also check gl_dir_size_summary */
 
+    /* Note the ';' loop intentionally empty */
+    for (i = 0, num_targets = 0; targets[i] != NULL; i++, num_targets++);
+
+    if ((info = (file_info*)malloc(num_targets * sizeof(file_info))) == NULL)
+    {
+        fprintf(stderr, "%s: unable to malloc: %s\n",
+                gl_progname,
+                strerror(errno));
+        exit(1);
+    }
+
+    for (i = 0; targets[i] != NULL; i++)
+    {
+        if (stat(targets[i], &st) < 0)
+        {
+            fprintf(stderr, "%s: could not stat '%s': %s\n",
+                    gl_progname,
+                    targets[i],
+                    strerror(errno));
+            free(info);
+            exit(-1);
+        }
+
+        info[i].inode = st.st_ino;
+        info[i].blocksize = (st.st_blocks * DEFAULT_BLOCKSIZE) / gl_blocksize;
+        strmode(st.st_mode, info[i].mode);
+        info[i].num_links = st.st_nlink;
+        info[i].filesize = st.st_size;
+        if ((tmp_pw = getpwuid(st.st_uid)) == NULL)
+            info[i].owner = NULL;
+        else
+            info[i].owner = tmp_pw->pw_name;
+        info[i].uid = st.st_uid;
+        if ((tmp_gr = getgrgid(st.st_gid)) == NULL)
+            info[i].group = NULL;
+        else
+            info[i].group = tmp_gr->gr_name;
+        info[i].gid = st.st_gid;
+        info[i].date_modified = st.st_mtim;
+    }
+
     if (gl_opts.long_print || gl_opts.number_ids)
     {
-        /* TODO: n flag needs to be checked again in here */
+        for (i = 0; targets[i] != NULL; i++)
+        {
+            strftime(date, 13, "%b %d %H:%M",
+                    localtime(&info[i].date_modified.tv_sec));
+
+            if (gl_opts.q_printing)
+                name = sanitize(targets[i]);
+            else
+                name = strdup(targets[i]);
+
+            if (gl_opts.number_ids)
+            {
+                printf("%s %d %li %li %li %s %s\n",
+                        info[i].mode,
+                        info[i].num_links,
+                        info[i].uid,
+                        info[i].gid,
+                        info[i].filesize,
+                        date,
+                        name);
+            }
+            else
+            {
+                printf("%s %d %s %s %li %s %s\n",
+                        info[i].mode,
+                        info[i].num_links,
+                        info[i].owner,
+                        info[i].group,
+                        info[i].filesize,
+                        date,
+                        name);
+            }
+
+            free(name);
+        }
     }
     else if (gl_opts.Columns || gl_opts.x_columns)
     {
@@ -34,6 +137,12 @@ void print(char** targets)
             for (i = 0, x = 0; targets[i] != NULL; i++)
             {
                 len = strlen(targets[i]);
+
+                if (gl_opts.q_printing)
+                    name = sanitize(targets[i]);
+                else
+                    name = strdup(targets[i]);
+
                 if (x >= ws.ws_col)
                 {
                     x = 0;
@@ -43,13 +152,8 @@ void print(char** targets)
                     x = 0;
                     printf("\n");
                 }
-                if (gl_opts.q_printing)
-                {
-                    printf("%s  ", tmp = sanitize(targets[i]));
-                    free(tmp);
-                }
-                else
-                    printf("%s  ", targets[i]);
+                printf("%s  ", name);
+                free(name);
                 x += len + 2;
             }
 
@@ -69,12 +173,14 @@ void print(char** targets)
         for (i = 0; targets[i] != NULL; i++)
         {
             if (gl_opts.q_printing)
-            {
-                printf("%s\n", tmp = sanitize(targets[i]));
-                free(tmp);
-            }
+                name = sanitize(targets[i]);
             else
-                printf("%s\n", targets[i]);
+                name = strdup(targets[i]);
+
+            printf("%s\n", name);
+            free(name);
         }
     }
+
+    free(info);
 }

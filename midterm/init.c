@@ -1,10 +1,11 @@
 /* Bradford Smith
  * CS 631 Midterm init.c
- * 10/07/2016
+ * 10/09/2016
  */
 
 #include "ls.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
@@ -24,6 +25,10 @@ void init(char* progname)
     }
     else
         gl_blocksize = DEFAULT_BLOCKSIZE;
+
+#ifdef DEBUG
+    fprintf(stderr, "[DEBUG]\tactive blocksize: %d\n", gl_blocksize);
+#endif
 
     /* handle TZ environment variable */
     tzset();

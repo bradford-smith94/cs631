@@ -1,6 +1,6 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 Midterm
-# 10/08/2016
+# 10/09/2016
 ################################################################################
 
 AUTHOR=bsmith8
@@ -9,7 +9,7 @@ SRC=ls.c cmp.c get_winsize.c init.c print.c sanitize.c sort.c swap.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
-LDLIBS+=
+LDLIBS+= -lbsd
 LDFLAGS+=
 CFLAGS+= -I./include
 CPPFLAGS+= -Wall -pedantic-errors
