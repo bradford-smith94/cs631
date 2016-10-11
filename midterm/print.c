@@ -34,6 +34,7 @@ void print(char** targets, int containing_dir)
     int num_targets;
     char* name;
     char date[13]; /* 3 for month, 2 for day, 6 for time, 2 spaces and null */
+    unsigned long total_size;
     struct stat st;
     struct winsize ws;
     struct group* tmp_gr;
@@ -44,8 +45,7 @@ void print(char** targets, int containing_dir)
     if (targets == NULL || targets[0] == NULL)
         return;
 
-    /* TODO: i, s, h, k, F flags need to be checked */
-    /* when s is checked also check gl_dir_size_summary */
+    /* TODO: h, F flags need to be checked */
 
     /* Note the ';' loop intentionally empty */
     for (i = 0, num_targets = 0; targets[i] != NULL; i++, num_targets++);
@@ -90,6 +90,17 @@ void print(char** targets, int containing_dir)
 
     if (gl_opts.long_print || gl_opts.number_ids)
     {
+        if (gl_opts.system_blocks && gl_dir_size_summary)
+        {
+            for (i = 0, total_size = 0; targets[i] != NULL; i++)
+                total_size += info[i].blocksize;
+
+            if (gl_opts.kilobytes)
+                printf("total: %li\n", (total_size * gl_blocksize) / 1024);
+            else
+                printf("total: %li\n", total_size);
+        }
+
         for (i = 0; targets[i] != NULL; i++)
         {
             strftime(date, 13, "%b %d %H:%M",
@@ -99,6 +110,16 @@ void print(char** targets, int containing_dir)
                 name = sanitize(targets[i]);
             else
                 name = strdup(targets[i]);
+
+            if (gl_opts.inodes)
+                printf("%li ", info[i].inode);
+            if (gl_opts.system_blocks)
+            {
+                if (gl_opts.kilobytes)
+                    printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
+                else
+                    printf("%li ", info[i].blocksize);
+            }
 
             if (gl_opts.number_ids)
             {
@@ -128,6 +149,17 @@ void print(char** targets, int containing_dir)
     }
     else if (gl_opts.Columns || gl_opts.x_columns)
     {
+        if (gl_opts.system_blocks && gl_dir_size_summary)
+        {
+            for (i = 0, total_size = 0; targets[i] != NULL; i++)
+                total_size += info[i].blocksize;
+
+            if (gl_opts.kilobytes)
+                printf("total: %li\n", (total_size * gl_blocksize) / 1024);
+            else
+                printf("total: %li\n", total_size);
+        }
+
         ws = get_winsize();
         if (gl_opts.x_columns)
         {
@@ -150,6 +182,16 @@ void print(char** targets, int containing_dir)
                     x = 0;
                     printf("\n");
                 }
+                if (gl_opts.inodes)
+                    printf("%li ", info[i].inode);
+                if (gl_opts.system_blocks)
+                {
+                    if (gl_opts.kilobytes)
+                        printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
+                    else
+                        printf("%li ", info[i].blocksize);
+                }
+
                 printf("%s  ", name);
                 free(name);
                 x += len + 2;
@@ -175,6 +217,16 @@ void print(char** targets, int containing_dir)
                     else
                         name = strdup(targets[i]);
 
+                    if (gl_opts.inodes)
+                        printf("%li ", info[i].inode);
+                    if (gl_opts.system_blocks)
+                    {
+                        if (gl_opts.kilobytes)
+                            printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
+                        else
+                            printf("%li ", info[i].blocksize);
+                    }
+
                     printf("%s  ", name);
                     free(name);
                 }
@@ -194,6 +246,16 @@ void print(char** targets, int containing_dir)
                     else
                         name = strdup(targets[i]);
 
+                    if (gl_opts.inodes)
+                        printf("%li ", info[i].inode);
+                    if (gl_opts.system_blocks)
+                    {
+                        if (gl_opts.kilobytes)
+                            printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
+                        else
+                            printf("%li ", info[i].blocksize);
+                    }
+
                     printf("%s\n", name);
                     free(name);
                 }
@@ -202,12 +264,33 @@ void print(char** targets, int containing_dir)
     }
     else if (gl_opts.one_column)
     {
+        if (gl_opts.system_blocks && gl_dir_size_summary)
+        {
+            for (i = 0, total_size = 0; targets[i] != NULL; i++)
+                total_size += info[i].blocksize;
+
+            if (gl_opts.kilobytes)
+                printf("total: %li\n", (total_size * gl_blocksize) / 1024);
+            else
+                printf("total: %li\n", total_size);
+        }
+
         for (i = 0; targets[i] != NULL; i++)
         {
             if (gl_opts.q_printing)
                 name = sanitize(targets[i]);
             else
                 name = strdup(targets[i]);
+
+            if (gl_opts.inodes)
+                printf("%li ", info[i].inode);
+            if (gl_opts.system_blocks)
+            {
+                if (gl_opts.kilobytes)
+                    printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
+                else
+                    printf("%li ", info[i].blocksize);
+            }
 
             printf("%s\n", name);
             free(name);
