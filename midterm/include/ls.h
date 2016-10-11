@@ -46,6 +46,7 @@ struct s_opts {
 } gl_opts;
 
 char gl_dir_size_summary;
+char gl_exit_code;
 char gl_only_cwd;
 char* gl_progname;
 int gl_blocksize;

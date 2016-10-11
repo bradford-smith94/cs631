@@ -206,5 +206,5 @@ int main(int argc, char** argv)
     for (i = 0; targets[i] != NULL; i++)
         free(targets[i]);
     free(targets);
-    return 0;
+    return gl_exit_code;
 }

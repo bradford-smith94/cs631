@@ -57,6 +57,8 @@ void init(char* progname)
     /* flag if no operands are given */
     gl_only_cwd = 0;
 
+    gl_exit_code = 0;
+
     if (geteuid() == 0)
     {
         /* super-user defaults */

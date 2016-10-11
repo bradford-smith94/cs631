@@ -58,6 +58,14 @@ void print(char** targets, int containing_dir)
         exit(1);
     }
 
+#ifdef DEBUG
+    if (containing_dir == AT_FDCWD)
+        fprintf(stderr, "[DEBUG]\tprint called with containing_dir == AT_FDCWD\n");
+    else
+        fprintf(stderr, "[DEBUG]\tprint called with containing_dir\n");
+#endif
+
+
     for (i = 0; targets[i] != NULL; i++)
     {
         if (fstatat(containing_dir, targets[i], &st, 0) < 0)

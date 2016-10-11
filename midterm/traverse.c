@@ -88,8 +88,8 @@ void traverse(char** targets)
                             gl_progname,
                             dirs[i],
                             strerror(errno));
-                    /* TODO: maybe continue if permission error? */
-                    exit(1);
+                    gl_exit_code = 1;
+                    continue;
                 }
 
                 if ((directory = opendir(".")) == NULL)
@@ -98,8 +98,8 @@ void traverse(char** targets)
                             gl_progname,
                             dirs[i],
                             strerror(errno));
-                    /* TODO: maybe continue if permission error? */
-                    exit(1);
+                    gl_exit_code = 1;
+                    continue;
                 }
 
                 if (!(gl_only_cwd && strcmp(dirs[i], ".") == 0))

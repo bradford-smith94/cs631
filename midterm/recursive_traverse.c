@@ -49,6 +49,9 @@ void recursive_traverse(char** targets)
 
         if (entity->fts_info == FTS_D)
         {
+#ifdef DEBUG
+            fprintf(stderr, "[DEBUG]\trecursive traversing: dir pre\n");
+#endif
             /* print any files from previous directory */
             if (children != NULL)
             {
@@ -66,31 +69,19 @@ void recursive_traverse(char** targets)
                 children = NULL;
             }
 
-            num_dirs++;
-            if ((dirs = (char**)realloc(dirs, num_dirs * sizeof(char*))) == NULL)
-            {
-                fprintf(stderr, "%s: unable to realloc: %s\n",
-                        gl_progname,
-                        strerror(errno));
-                exit(1);
-            }
-            dirs[num_dirs - 1] = strdup(entity->fts_path);
-
-            if (dir_fd != -1)
-            {
-                (void)closedir(directory);
-                dir_fd = -1;
-                directory = NULL;
-            }
+#ifdef DEBUG
+            fprintf(stderr, "[DEBUG]\topenning dir: pre '%s'\n",
+                    entity->fts_path);
+#endif
 
             if ((directory = opendir(entity->fts_path)) == NULL)
             {
-                /* TODO: continue on permission error */
                 fprintf(stderr, "%s: unable to opendir '%s': %s\n",
                         gl_progname,
                         entity->fts_path,
                         strerror(errno));
-                exit(1);
+                gl_exit_code = 1;
+                continue;
             }
 
             if ((dir_fd = dirfd(directory)) < 0)
@@ -101,9 +92,22 @@ void recursive_traverse(char** targets)
                         strerror(errno));
                 exit(1);
             }
+
+            num_dirs++;
+            if ((dirs = (char**)realloc(dirs, num_dirs * sizeof(char*))) == NULL)
+            {
+                fprintf(stderr, "%s: unable to realloc: %s\n",
+                        gl_progname,
+                        strerror(errno));
+                exit(1);
+            }
+            dirs[num_dirs - 1] = strdup(entity->fts_path);
         }
         else if (entity->fts_info == FTS_DP)
         {
+#ifdef DEBUG
+            fprintf(stderr, "[DEBUG]\trecursive traversing: dir post\n");
+#endif
             /* print any files from previous directory */
             if (children != NULL)
             {
@@ -126,6 +130,10 @@ void recursive_traverse(char** targets)
 
             if (dir_fd != -1)
             {
+#ifdef DEBUG
+            fprintf(stderr, "[DEBUG]\tclosing dir: post '%s'\n",
+                    entity->fts_path);
+#endif
                 (void)closedir(directory);
                 dir_fd = -1;
                 directory = NULL;
@@ -159,14 +167,21 @@ void recursive_traverse(char** targets)
         }
         else if (entity->fts_info == FTS_DNR)
         {
+#ifdef DEBUG
+            fprintf(stderr, "[DEBUG]\trecursive traversing: dir err\n");
+#endif
             fprintf(stderr, "%s: cannot read directory '%s': %s\n",
                     gl_progname,
                     entity->fts_path,
                     strerror(entity->fts_errno));
-            exit(1);
+            gl_exit_code = 1;
+            continue;
         }
         else
         {
+#ifdef DEBUG
+            fprintf(stderr, "[DEBUG]\trecursive traversing: file\n");
+#endif
             num_children++;
             if ((children = (char**)realloc(children,
                             (num_children + 1) * sizeof(char*))) == NULL)
