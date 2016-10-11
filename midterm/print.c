@@ -1,23 +1,17 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm print.c
- * 10/10/2016
+ * 10/11/2016
  */
 
 #include "ls.h"
 
 #include <sys/ioctl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include <bsd/string.h>
-#include <errno.h>
+#include <fcntl.h>
 #include <grp.h>
 #include <pwd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
-#include <unistd.h>
 
 typedef struct s_file {
     unsigned long inode;
@@ -32,7 +26,7 @@ typedef struct s_file {
     struct timespec date_modified;
 } file_info;
 
-void print(char** targets)
+void print(char** targets, int containing_dir)
 {
     int i;
     int x;
@@ -66,7 +60,7 @@ void print(char** targets)
 
     for (i = 0; targets[i] != NULL; i++)
     {
-        if (stat(targets[i], &st) < 0)
+        if (fstatat(containing_dir, targets[i], &st, 0) < 0)
         {
             fprintf(stderr, "%s: could not stat '%s': %s\n",
                     gl_progname,

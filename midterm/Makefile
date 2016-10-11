@@ -1,11 +1,12 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 Midterm
-# 10/10/2016
+# 10/11/2016
 ################################################################################
 
 AUTHOR=bsmith8
 PROJECT=midterm
-SRC=ls.c cmp.c get_winsize.c init.c print.c sanitize.c sort.c swap.c traverse.c
+SRC=ls.c cmp.c ftscmp.c get_winsize.c init.c print.c recursive_traverse.c \
+	sanitize.c sort.c traverse.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f

@@ -1,14 +1,9 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm sanitize.c
- * 10/09/2016
+ * 10/11/2016
  */
 
 #include "ls.h"
-
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 /* pre: none, takes in a char* 'input'
  * post: sanitizes 'input' by replacing all the non-printing characters it

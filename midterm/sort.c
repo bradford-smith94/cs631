@@ -5,15 +5,6 @@
 
 #include "ls.h"
 
-#include <sys/stat.h>
-#include <sys/types.h>
-
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
 /* pre: none, takes in a char** 'list'
  * post: post sorts 'list' based on the defined global options
  */

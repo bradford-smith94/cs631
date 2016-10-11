@@ -5,15 +5,8 @@
 
 #include "ls.h"
 
-#include <sys/stat.h>
-#include <sys/types.h>
-
 #include <dirent.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <fcntl.h>
 
 void traverse(char** targets)
 {
@@ -33,11 +26,11 @@ void traverse(char** targets)
 
     if (gl_opts.directories)
     {
-        print(targets);
+        print(targets, AT_FDCWD);
     }
     else
     {
-        /* count and separate out dirs */
+        /* count dirs */
         for (i = 0, dir_idx = 0, num_dirs = 0; targets[i] != NULL; i++)
         {
             if (stat(targets[i], &st) < 0)
@@ -63,6 +56,7 @@ void traverse(char** targets)
 
         if (num_dirs > 0)
         {
+            /* separate out the directories */
             if ((dirs = (char**)malloc((num_dirs + 1) * sizeof(char*))) == NULL)
             {
                 fprintf(stderr, "%s: unable to malloc: %s\n",
@@ -84,7 +78,7 @@ void traverse(char** targets)
             targets[dir_idx] = NULL;
 
             /* print the non-directory items */
-            print(targets);
+            print(targets, AT_FDCWD);
 
             for (i = 0; dirs[i] != NULL; i++)
             {
@@ -134,7 +128,7 @@ void traverse(char** targets)
                     if ((children = (char**)realloc(children,
                                     (num_children + 1) * sizeof(char*))) == NULL)
                     {
-                        fprintf(stderr, "%s: unable to malloc: %s\n",
+                        fprintf(stderr, "%s: unable to realloc: %s\n",
                                 gl_progname,
                                 strerror(errno));
                         exit(1);
@@ -145,14 +139,8 @@ void traverse(char** targets)
                 {
                     children[num_children] = NULL;
 
-                    /* TODO: check this from main instead */
-                    if (gl_opts.Recursive)
-                        traverse(children);
-                    else
-                    {
-                        sort(children);
-                        print(children);
-                    }
+                    sort(children);
+                    print(children, AT_FDCWD);
 
                     /* free the children; say no child slaves! */
                     for (j = 0; children[j] != NULL; j++)
@@ -176,6 +164,6 @@ void traverse(char** targets)
             free(dirs);
         }
         else
-            print(targets);
+            print(targets, AT_FDCWD);
     }
 }

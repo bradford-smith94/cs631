@@ -1,18 +1,9 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm cmp.c
- * 10/09/2016
+ * 10/11/2016
  */
 
 #include "ls.h"
-
-#include <sys/stat.h>
-#include <sys/types.h>
-
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 /* pre: takes in a char* a, and a char* b which are not NULL
  * post: compares a and b
@@ -121,5 +112,4 @@ int cmp(char* a, char* b)
     {
         return -1;
     }
-
 }

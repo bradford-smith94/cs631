@@ -1,15 +1,9 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm ls.c
- * 10/10/2016
+ * 10/11/2016
  */
 
 #include "ls.h"
-
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 int main(int argc, char** argv)
 {
@@ -204,8 +198,10 @@ int main(int argc, char** argv)
 
     /* Note: targets is now a list of files/directories terminated by a NULL */
 
-    /* TODO; check R here and make recursive traverse that uses fts_open */
-    traverse(targets);
+    if (gl_opts.Recursive && !gl_opts.directories)
+        recursive_traverse(targets);
+    else
+        traverse(targets);
 
     for (i = 0; targets[i] != NULL; i++)
         free(targets[i]);

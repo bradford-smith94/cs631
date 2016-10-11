@@ -1,16 +1,11 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm get_winsize.c
- * 10/07/2016
+ * 10/11/2016
  */
 
 #include "ls.h"
 
 #include <sys/ioctl.h>
-
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 struct winsize get_winsize()
 {

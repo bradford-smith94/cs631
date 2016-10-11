@@ -1,12 +1,22 @@
 /* Bradford Smith (bsmith8)
  * CS 631 Midterm ls.h
- * 10/10/2016
+ * 10/11/2016
  */
 
 #ifndef _LS_H_
 #define _LS_H_
 
 #define DEFAULT_BLOCKSIZE 512
+
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <errno.h>
+#include <fts.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 /* global options structure */
 struct s_opts {
@@ -44,13 +54,14 @@ int gl_blocksize;
 int             main(int, char**);
 
 int             cmp(char*, char*);
+int             ftscmp(const FTSENT**, const FTSENT**);
 struct winsize  get_winsize();
 void            init(char*);
 void            init_caps();
-void            print(char**);
+void            print(char**, int);
+void            recursive_traverse(char**);
 char*           sanitize(char*);
 void            sort(char**);
-void            swap(char**, char**);
 void            traverse(char**);
 
 #endif /* _LS_H_ */
