@@ -5,8 +5,8 @@
 
 AUTHOR=bsmith8
 PROJECT=midterm
-SRC=ls.c cmp.c ftscmp.c get_winsize.c init.c print.c recursive_traverse.c \
-	sanitize.c sort.c traverse.c
+SRC=ls.c cmp.c ftscmp.c get_winsize.c init.c print.c print_human_size.c \
+	recursive_traverse.c sanitize.c sort.c traverse.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f

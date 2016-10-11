@@ -60,6 +60,7 @@ struct winsize  get_winsize();
 void            init(char*);
 void            init_caps();
 void            print(char**, int);
+void            print_human_size(unsigned long, char);
 void            recursive_traverse(char**);
 char*           sanitize(char*);
 void            sort(char**);

@@ -45,7 +45,7 @@ void print(char** targets, int containing_dir)
     if (targets == NULL || targets[0] == NULL)
         return;
 
-    /* TODO: h, F flags need to be checked */
+    /* TODO: F flags need to be checked */
 
     /* Note the ';' loop intentionally empty */
     for (i = 0, num_targets = 0; targets[i] != NULL; i++, num_targets++);
@@ -103,7 +103,12 @@ void print(char** targets, int containing_dir)
             for (i = 0, total_size = 0; targets[i] != NULL; i++)
                 total_size += info[i].blocksize;
 
-            if (gl_opts.kilobytes)
+            if (gl_opts.human_sizes)
+            {
+                printf("total: ");
+                print_human_size(total_size * gl_blocksize, 1);
+            }
+            else if (gl_opts.kilobytes)
                 printf("total: %li\n", (total_size * gl_blocksize) / 1024);
             else
                 printf("total: %li\n", total_size);
@@ -123,7 +128,11 @@ void print(char** targets, int containing_dir)
                 printf("%li ", info[i].inode);
             if (gl_opts.system_blocks)
             {
-                if (gl_opts.kilobytes)
+                if (gl_opts.human_sizes)
+                {
+                    print_human_size(info[i].blocksize * gl_blocksize, 0);
+                }
+                else if (gl_opts.kilobytes)
                     printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
                 else
                     printf("%li ", info[i].blocksize);
@@ -131,25 +140,33 @@ void print(char** targets, int containing_dir)
 
             if (gl_opts.number_ids)
             {
-                printf("%s %d %li %li %li %s %s\n",
-                        info[i].mode,
-                        info[i].num_links,
-                        info[i].uid,
-                        info[i].gid,
-                        info[i].filesize,
-                        date,
-                        name);
+                printf("%s ", info[i].mode);
+                printf("%d ", info[i].num_links);
+                printf("%li ", info[i].uid);
+                printf("%li ", info[i].gid);
+                if (gl_opts.human_sizes)
+                {
+                    print_human_size(info[i].filesize, 0);
+                }
+                else
+                    printf("%li ", info[i].filesize);
+                printf("%s ", date);
+                printf("%s\n", name);
             }
             else
             {
-                printf("%s %d %s %s %li %s %s\n",
-                        info[i].mode,
-                        info[i].num_links,
-                        info[i].owner,
-                        info[i].group,
-                        info[i].filesize,
-                        date,
-                        name);
+                printf("%s ", info[i].mode);
+                printf("%d ", info[i].num_links);
+                printf("%s ", info[i].owner);
+                printf("%s ", info[i].group);
+                if (gl_opts.human_sizes)
+                {
+                    print_human_size(info[i].filesize, 0);
+                }
+                else
+                    printf("%li ", info[i].filesize);
+                printf("%s ", date);
+                printf("%s\n", name);
             }
 
             free(name);
@@ -162,7 +179,12 @@ void print(char** targets, int containing_dir)
             for (i = 0, total_size = 0; targets[i] != NULL; i++)
                 total_size += info[i].blocksize;
 
-            if (gl_opts.kilobytes)
+            if (gl_opts.human_sizes)
+            {
+                printf("total: ");
+                print_human_size(total_size * gl_blocksize, 1);
+            }
+            else if (gl_opts.kilobytes)
                 printf("total: %li\n", (total_size * gl_blocksize) / 1024);
             else
                 printf("total: %li\n", total_size);
@@ -194,7 +216,11 @@ void print(char** targets, int containing_dir)
                     printf("%li ", info[i].inode);
                 if (gl_opts.system_blocks)
                 {
-                    if (gl_opts.kilobytes)
+                    if (gl_opts.human_sizes)
+                    {
+                        print_human_size(info[i].blocksize * gl_blocksize, 0);
+                    }
+                    else if (gl_opts.kilobytes)
                         printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
                     else
                         printf("%li ", info[i].blocksize);
@@ -229,7 +255,11 @@ void print(char** targets, int containing_dir)
                         printf("%li ", info[i].inode);
                     if (gl_opts.system_blocks)
                     {
-                        if (gl_opts.kilobytes)
+                        if (gl_opts.human_sizes)
+                        {
+                            print_human_size(info[i].blocksize * gl_blocksize, 0);
+                        }
+                        else if (gl_opts.kilobytes)
                             printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
                         else
                             printf("%li ", info[i].blocksize);
@@ -258,7 +288,11 @@ void print(char** targets, int containing_dir)
                         printf("%li ", info[i].inode);
                     if (gl_opts.system_blocks)
                     {
-                        if (gl_opts.kilobytes)
+                        if (gl_opts.human_sizes)
+                        {
+                            print_human_size(info[i].blocksize * gl_blocksize, 0);
+                        }
+                        else if (gl_opts.kilobytes)
                             printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
                         else
                             printf("%li ", info[i].blocksize);
@@ -277,7 +311,12 @@ void print(char** targets, int containing_dir)
             for (i = 0, total_size = 0; targets[i] != NULL; i++)
                 total_size += info[i].blocksize;
 
-            if (gl_opts.kilobytes)
+            if (gl_opts.human_sizes)
+            {
+                printf("total: ");
+                print_human_size(total_size * gl_blocksize, 1);
+            }
+            else if (gl_opts.kilobytes)
                 printf("total: %li\n", (total_size * gl_blocksize) / 1024);
             else
                 printf("total: %li\n", total_size);
@@ -294,7 +333,11 @@ void print(char** targets, int containing_dir)
                 printf("%li ", info[i].inode);
             if (gl_opts.system_blocks)
             {
-                if (gl_opts.kilobytes)
+                if (gl_opts.human_sizes)
+                {
+                    print_human_size(info[i].blocksize * gl_blocksize, 0);
+                }
+                else if (gl_opts.kilobytes)
                     printf("%li ", (info[i].blocksize * gl_blocksize) / 1024);
                 else
                     printf("%li ", info[i].blocksize);
