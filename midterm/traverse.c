@@ -8,8 +8,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <dirent.h>
 #include <errno.h>
-#include <fts.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,15 +18,15 @@
 void traverse(char** targets)
 {
     int i;
+    int j;
     int dir_idx;
     int num_dirs;
     int num_children;
     char** dirs;
     char** children;
     struct stat st;
-    FTS* filesystem;
-    FTSENT* parent;
-    FTSENT* child;
+    DIR* directory;
+    struct dirent* entry;
 
     if (!gl_opts.f_unsorted)
         sort(targets);
@@ -78,72 +78,67 @@ void traverse(char** targets)
             /* print the non-directory items */
             print(targets);
 
-            /* TODO: check this for failure */
-            if (gl_opts.all)
-                filesystem = fts_open(dirs, FTS_PHYSICAL|FTS_NOSTAT|FTS_SEEDOT, NULL);
-            else
-                filesystem = fts_open(dirs, FTS_PHYSICAL|FTS_NOSTAT, NULL);
-
-            while ((parent = fts_read(filesystem)) != NULL)
+            for (i = 0; dirs[i] != NULL; i++)
             {
-                if (!gl_only_cwd)
-                    printf("\n%s:\n", parent->fts_name);
-
-                child = fts_children(filesystem, FTS_NAMEONLY);
-
-                if (child != NULL)
+                /* TODO chdir(2) */
+                if ((directory = opendir(dirs[i])) == NULL)
                 {
-                    /* TODO: check A */
-                    num_children = 1;
-                    while (child->fts_link != NULL)
+                    fprintf(stderr, "%s: could not opendir '%s': %s\n",
+                            gl_progname,
+                            dirs[i],
+                            strerror(errno));
+                    /* TODO: maybe continue if permission error? */
+                    exit(1);
+                }
+
+                num_children = 0;
+                children = NULL;
+                while ((entry = readdir(directory)) != NULL)
+                {
+                    if (!gl_only_cwd)
+                        printf("\n%s:\n", dirs[i]);
+
+#ifdef DEBUG
+                    fprintf(stderr, "[DEBUG]\ttraversing '%s'\n", entry->d_name);
+#endif
+
+                    if ((strcmp(entry->d_name, ".") == 0 ||
+                        strcmp(entry->d_name, "..") == 0) && !gl_opts.all)
                     {
-                        num_children++;
-                        child = child->fts_link;
+                        continue;
+                    }
+                    else if(entry->d_name[0] == '.' && (!gl_opts.all && !gl_opts.All))
+                    {
+                        continue;
                     }
 
-                    /* start from beginning */
-                    child = fts_children(filesystem, FTS_NAMEONLY);
-
-                    if ((children = (char**)malloc((num_children + 1) * sizeof(char*)))
-                            == NULL)
+                    num_children++;
+                    if ((children = (char**)realloc(children,
+                                    num_children * sizeof(char*) + 1)) == NULL)
                     {
                         fprintf(stderr, "%s: unable to malloc: %s\n",
                                 gl_progname,
                                 strerror(errno));
                         exit(1);
                     }
+                    children[num_children - 1] = strdup(entry->d_name);
+                }
+                if (children != NULL)
+                    children[num_children - 1] = NULL;
 
-                    children[0] = strdup(child->fts_name);
-                    i = 1;
-                    while (child->fts_link != NULL)
-                    {
-                        child = child->fts_link;
-                        children[i++] = strdup(child->fts_name);
-                    }
-                    children[i] = NULL;
+                /* TODO: check R maybe use fts_open from main instead? */
+                sort(children);
+                print(children);
 
-                    if (gl_opts.Recursive)
-                    {
-                        /* traverse children */
-                        traverse(children);
-                    }
-                    else
-                    {
-                        /* sort and print children */
-                        if (!gl_opts.f_unsorted)
-                            sort(children);
-
-                        print(children);
-                    }
-
+                if (children != NULL)
+                {
                     /* free the children; say no child slaves! */
-                    for (i = 0; children[i] != NULL; i++)
-                        free(children[i]);
+                    for (j = 0; children[j] != NULL; j++)
+                        free(children[j]);
                     free(children);
                 }
             }
 
-            (void)fts_close(filesystem);
             for (i = 0; dirs[i] != NULL; i++)
                 free(dirs[i]);
             free(dirs);
