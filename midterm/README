@@ -1,0 +1,19 @@
+Bradford Smith (bsmith8)
+CS 631 Midterm README
+10/11/2016
+========================
+
+Similar to my submission for homework 2 the directory `man1/` contains the man
+page given as the spec for the program, and I have left my debugging statements
+in my code (these can be activated by defining 'DEBUG' at compile time, which
+the Makefile target 'debug' will do).
+
+I have attempted the extra credit for this assignment. I didn't finish getting
+`-C` to work, but it handles when all items fit on one row (matches `-x` in this
+case), all other cases it prints the items in one column like `-1`. With this
+functionality I thought it safe to leave that as the default when executing from
+a terminal, please specify the `-1` option to see the specified
+(non-extra-credit) behavior.
+
+I did not have time to check the `-F` option, and I did not have time to make
+the program print aligned columns for the `-l`, `-x` and `-C` options.
