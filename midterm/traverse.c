@@ -57,6 +57,10 @@ void traverse(char** targets)
             }
         }
 
+#ifdef DEBUG
+        fprintf(stderr, "[DEBUG]\tfound %d dirs\n", num_dirs);
+#endif
+
         if (num_dirs > 0)
         {
             if ((dirs = (char**)malloc((num_dirs + 1) * sizeof(char*))) == NULL)
@@ -70,6 +74,10 @@ void traverse(char** targets)
             for (i = dir_idx; targets[i] != NULL; i++)
             {
                 dirs[i - dir_idx] = strdup(targets[i]);
+#ifdef DEBUG
+                fprintf(stderr, "[DEBUG]\tfound dir: '%s'\n",
+                        targets[i]);
+#endif
                 free(targets[i]);
             }
             dirs[i - dir_idx] = NULL;
@@ -80,8 +88,17 @@ void traverse(char** targets)
 
             for (i = 0; dirs[i] != NULL; i++)
             {
-                /* TODO chdir(2) */
-                if ((directory = opendir(dirs[i])) == NULL)
+                if (chdir(dirs[i]) < 0)
+                {
+                    fprintf(stderr, "%s: unable to chdir to '%s': %s\n",
+                            gl_progname,
+                            dirs[i],
+                            strerror(errno));
+                    /* TODO: maybe continue if permission error? */
+                    exit(1);
+                }
+
+                if ((directory = opendir(".")) == NULL)
                 {
                     fprintf(stderr, "%s: could not opendir '%s': %s\n",
                             gl_progname,
@@ -91,12 +108,13 @@ void traverse(char** targets)
                     exit(1);
                 }
 
+                if (!(gl_only_cwd && strcmp(dirs[i], ".") == 0))
+                    printf("\n%s:\n", dirs[i]);
+
                 num_children = 0;
                 children = NULL;
                 while ((entry = readdir(directory)) != NULL)
                 {
-                    if (!gl_only_cwd)
-                        printf("\n%s:\n", dirs[i]);
 
 #ifdef DEBUG
                     fprintf(stderr, "[DEBUG]\ttraversing '%s'\n", entry->d_name);
@@ -114,7 +132,7 @@ void traverse(char** targets)
 
                     num_children++;
                     if ((children = (char**)realloc(children,
-                                    num_children * sizeof(char*) + 1)) == NULL)
+                                    (num_children + 1) * sizeof(char*))) == NULL)
                     {
                         fprintf(stderr, "%s: unable to malloc: %s\n",
                                 gl_progname,
@@ -124,19 +142,33 @@ void traverse(char** targets)
                     children[num_children - 1] = strdup(entry->d_name);
                 }
                 if (children != NULL)
-                    children[num_children - 1] = NULL;
-
-                /* TODO: check R maybe use fts_open from main instead? */
-                sort(children);
-                print(children);
-
-                if (children != NULL)
                 {
+                    children[num_children] = NULL;
+
+                    /* TODO: check this from main instead */
+                    if (gl_opts.Recursive)
+                        traverse(children);
+                    else
+                    {
+                        sort(children);
+                        print(children);
+                    }
+
                     /* free the children; say no child slaves! */
                     for (j = 0; children[j] != NULL; j++)
                         free(children[j]);
                     free(children);
                 }
+
+                if (chdir("..") < 0)
+                {
+                    fprintf(stderr, "%s: unable to chdir to '..': %s\n",
+                            gl_progname,
+                            strerror(errno));
+                    exit(1);
+                }
+
+                (void)closedir(directory);
             }
 
             for (i = 0; dirs[i] != NULL; i++)

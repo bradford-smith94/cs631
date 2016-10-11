@@ -204,6 +204,7 @@ int main(int argc, char** argv)
 
     /* Note: targets is now a list of files/directories terminated by a NULL */
 
+    /* TODO; check R here and make recursive traverse that uses fts_open */
     traverse(targets);
 
     for (i = 0; targets[i] != NULL; i++)
