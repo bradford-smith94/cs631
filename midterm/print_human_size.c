@@ -5,6 +5,10 @@
 
 #include "ls.h"
 
+/* pre: takes in an unsigned long 'bytes' and a char 'newline'
+ * post: prints out bytes in a human readable format, followed by a newline if
+ *      'newline' is not zero
+ */
 void print_human_size(unsigned long bytes, char newline)
 {
     unsigned long size_mod;

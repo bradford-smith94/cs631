@@ -8,6 +8,9 @@
 #include <dirent.h>
 #include <fcntl.h>
 
+/* pre: takes in a char** 'targets'
+ * post: traverses 'targets' and sorts and prints all the files found
+ */
 void traverse(char** targets)
 {
     int i;

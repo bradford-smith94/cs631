@@ -6,7 +6,8 @@
 #include "ls.h"
 
 /* pre: none, takes in a char** 'list'
- * post: post sorts 'list' based on the defined global options
+ * post: sorts 'list' based on the defined global options regarding sorting
+ *      using a simple insertion sort
  */
 void sort(char** list)
 {

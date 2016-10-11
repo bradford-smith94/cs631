@@ -7,6 +7,10 @@
 
 #include <sys/ioctl.h>
 
+/* pre: none
+ * post: gets the window size of the terminal running the program
+ * return: a struct winsize containing the dimensions of the window
+ */
 struct winsize get_winsize()
 {
     struct winsize w;

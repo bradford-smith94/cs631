@@ -8,6 +8,10 @@
 #include <dirent.h>
 #include <fcntl.h>
 
+/* pre: takes in a char** 'targets'
+ * post: recursively walks the directory tree beginning with 'targets' and sorts
+ *      and prints all the files found
+ */
 void recursive_traverse(char** targets)
 {
     int i;
