@@ -1,6 +1,6 @@
-/* Bradford Smith
+/* Bradford Smith (bsmith8)
  * CS 631 Midterm sort.c
- * 10/08/2016
+ * 10/11/2016
  */
 
 #include "ls.h"
@@ -22,11 +22,6 @@ void sort(char** list)
     int i;
     int j;
     char* tmp;
-
-    /* XXX: to use swap give it the address of elements:
-        swap(&(list[0]), &(list[1]));
-       XXX: might not need swap
-    */
 
     for (i = 1; list[i] != NULL; i++)
     {

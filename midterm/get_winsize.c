@@ -1,4 +1,4 @@
-/* Bradford Smith
+/* Bradford Smith (bsmith8)
  * CS 631 Midterm get_winsize.c
  * 10/07/2016
  */

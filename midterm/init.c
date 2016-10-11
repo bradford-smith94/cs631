@@ -1,4 +1,4 @@
-/* Bradford Smith
+/* Bradford Smith (bsmith8)
  * CS 631 Midterm init.c
  * 10/10/2016
  */

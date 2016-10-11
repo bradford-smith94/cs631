@@ -1,4 +1,4 @@
-/* Bradford Smith
+/* Bradford Smith (bsmith8)
  * CS 631 Midterm sanitize.c
  * 10/09/2016
  */

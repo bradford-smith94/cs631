@@ -1,6 +1,6 @@
-/* Bradford Smith
+/* Bradford Smith (bsmith8)
  * CS 631 Midterm traverse.c
- * 10/10/2016
+ * 10/11/2016
  */
 
 #include "ls.h"
