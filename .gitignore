@@ -2,3 +2,6 @@
 
 *.tar.gz
 *.tar
+
+# separate repository for final project
+group3/
