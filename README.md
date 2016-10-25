@@ -7,3 +7,5 @@ Bradford Smith programming assignments for CS 631 Advanced Programming in a UNIX
 - HW 2 Trivially Copy a File
 - Midterm LS
     - an ls program with a subset of the options from `ls(1)`
+- HW 3 Webserver Framework
+    - this is a checkpoint for the final project
