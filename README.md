@@ -9,3 +9,11 @@ Bradford Smith programming assignments for CS 631 Advanced Programming in a UNIX
     - an ls program with a subset of the options from `ls(1)`
 - HW 3 Webserver Framework
     - this is a checkpoint for the final project
+
+##Other
+- Welcome
+    - a sample illustrating descriptive error messages
+- intro-bsmith8
+    - simple intro assignments
+- libgreet
+    - a simple exercise in creating a shared library
