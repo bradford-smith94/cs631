@@ -1,0 +1,53 @@
+.TH greet 3 "14 November 2016" "version 0.0"
+
+.SH NAME
+.B greet, hello, getgreeting, setgreeting \- hello world library
+
+.SH LIBRARY
+Greetings Library (libgreet, -lgreet)
+
+.SH SYNOPSIS
+.EX
+#include <greeting.h>
+
+void
+greet(void);
+
+void
+hello(const char * friend, const char * greeting);
+
+char *
+getgreeting(void);
+
+int
+setgreeting(const char * greeting);
+.EE
+
+.SH DESCRIPTION
+The
+.BR greet ,
+family of functions allows you to easily greet your users.
+
+.PP
+The
+.BR greet ()
+function simply prints the current greeting, followed by a newline charcter (\n)
+to stdout.
+
+.PP
+The hello() function prints greeting prefixed with friend, a colon (:) and a
+space to stdout.
+
+.PP
+The getgreeting() function returns the current greeting.
+
+.PP
+The setgreeting() function sets the default greeting to use when calling
+.BR greet ().
+
+.SH HISTORY
+The
+.BR greet ,
+family of functions was first introducted in the class
+.I 'CS631 Advanced Programming in the UNIX Environment'
+at Stevens Institute of Technology in the Fall of 2015.
