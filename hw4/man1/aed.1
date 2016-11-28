@@ -1,0 +1,84 @@
+.TH aed 1 "28 November 2016" "version 0.0"
+
+.SH NAME
+.B aed \- perform aes256-cbc encryption/decryption
+
+.SH SYNOPSIS
+.B aed
+[\fBdeh\fR]
+
+.SH DESCRIPTION
+The \fB aed\fR utility can be used to perform symmetric encryption/decryption of
+the input stream using 256bit AES with a SHA1 digest.
+
+.SH OPTIONS
+.B aed
+supports the following command-line options:
+
+.TP
+.B -d
+Perform decryption of the input stream.
+
+.TP
+.B -e
+Perform encryption of the input stream.
+
+.TP
+.B -h
+Print a short usage and exit.
+
+.SH DETAILS
+.B aed
+reads data from stdin and either encrypts or decrypts it (depending on the
+\fB-d\fR or \fB-e\fR flag). It uses AES 256bit CBC mode with a SHA1 digest with
+keying material derived from the passphrase using the
+.BR EVP_BytesToKey(3)
+function, generating a suitable salt via
+.BR RAND_bytes(3).
+
+.PP
+.B aed
+reads the password from which to derive the key material from the \fIAED_PASS\fR
+environment variable.
+
+.PP
+Output is written to stdout.
+
+.PP
+When encrypting, the output is prefixed by the string "Salted__", followed by
+the 8 byte salt.
+
+.SH EXAMPLES
+To encrypt the contents of the file 'file' and storing the encrypted output in 'file.enc':
+.EX
+aed -e <file >file.enc
+.EE
+
+.PP
+To decrypt the contents of that file again:
+.EX
+aed -d <file.enc
+.EE
+
+.PP
+Since \fBaed\fR operates on stdin and stdout, the above two commands could also be chained:
+.EX
+cat file | aed -e | aed -d
+.EE
+
+.SH EXIT STATUS
+.B aed
+exits 0 on success, and >0 if an error occurred.
+
+.SH SEE ALSO
+.BR EVP_BytesToKey(3),
+.BR EVP_EncryptInit(3),
+.BR RAND_bytes(3).
+
+.SH HISTORY
+This program (or variants thereof) was first assigned as a stand-alone
+programming assignmen for the class "Advanced Programming in the UNIX
+Environment" at Stevens Institute of Technology in the Fall of 2012.
+
+.SH BUGS
+Well, let's see...
