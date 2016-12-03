@@ -6,11 +6,11 @@
 PRG=aed
 AUTHOR=bsmith8
 PROJECT=hw4
-SRC=aed.c usage.c
+SRC=aed.c decrypt.c encrypt.c genkey.c usage.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
-LDLIBS+= -lbsd
+LDLIBS+= -lbsd -lcrypto
 LDFLAGS+=
 CFLAGS+= -I./include
 CPPFLAGS+= -pedantic-errors -Wall

@@ -25,8 +25,10 @@ int main(int argc, char** argv)
         switch (opt)
         {
             case 'd':
+                decrypt();
                 break;
             case 'e':
+                encrypt();
                 break;
             case 'h':
                 usage();
