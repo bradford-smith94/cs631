@@ -6,9 +6,11 @@
 #include "aed.h"
 
 #include <bsd/stdlib.h>
+
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
