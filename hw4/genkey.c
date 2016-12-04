@@ -15,13 +15,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-t_privates genkey(unsigned char* givenSalt)
+t_privates* genkey(unsigned char* givenSalt)
 {
     char* aed_pass;
+    int i;
     unsigned char key[EVP_MAX_KEY_LENGTH];
     unsigned char iv[EVP_MAX_IV_LENGTH];
     unsigned char salt[SALT_SIZE];
-    t_privates ret;
+    t_privates* ret;
+
+    if ((ret = (t_privates*)malloc(sizeof(t_privates))) == NULL)
+    {
+        (void)fprintf(stderr, "%s: could not malloc: %s\n",
+                      getprogname(),
+                      strerror(errno));
+        exit(EXIT_FAILURE);
+
+    }
 
     if ((aed_pass = getenv(AED_PASS)) == NULL)
     {
@@ -40,14 +50,18 @@ t_privates genkey(unsigned char* givenSalt)
                           ERR_error_string(ERR_get_error(), NULL));
             exit(EXIT_FAILURE);
         }
-        ret.salt = salt;
+        for (i = 0; i < SALT_SIZE; i++)
+            ret->salt[i] = salt[i];
     }
     else
-        ret.salt = givenSalt;
+    {
+        for (i = 0; i < SALT_SIZE; i++)
+            ret->salt[i] = givenSalt[i];
+    }
 
     if (!EVP_BytesToKey(EVP_aes_256_cbc(),
                         EVP_sha1(),
-                        salt,
+                        ret->salt,
                         (unsigned char*)aed_pass,
                         strlen(aed_pass),
                         1,
@@ -58,8 +72,10 @@ t_privates genkey(unsigned char* givenSalt)
                       getprogname());
         exit(EXIT_FAILURE);
     }
-    ret.key = key;
-    ret.iv = iv;
+    for (i = 0; i < EVP_MAX_KEY_LENGTH; i++)
+        ret->key[i] = key[i];
+    for (i = 0; i < EVP_MAX_IV_LENGTH; i++)
+        ret->iv[i] = iv[i];
 
     return ret;
 }
