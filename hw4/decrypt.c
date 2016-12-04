@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 HW 4 decrypt.c
- * 12/03/2016
+ * 12/04/2016
  */
 
 #include "aed.h"
@@ -30,12 +30,18 @@ void decrypt()
     bzero(buf, BUFSIZ);
 
     len = strlen(ENC_PREFIX) + SALT_SIZE;
-    if ((n = read(STDIN_FILENO, buf, len)) == -1)
+    n = 0;
+    total = 0;
+    while ((len -= n))
     {
-        (void)fprintf(stderr, "%s: read error: %s\n",
-                      getprogname(),
-                      strerror(errno));
-        exit(EXIT_FAILURE);
+        if ((n = read(STDIN_FILENO, buf + total, len)) == -1)
+        {
+            (void)fprintf(stderr, "%s: read error: %s\n",
+                          getprogname(),
+                          strerror(errno));
+            exit(EXIT_FAILURE);
+        }
+        total += n;
     }
 
     if (strncmp(buf, ENC_PREFIX, strlen(ENC_PREFIX)))
