@@ -34,14 +34,23 @@ void decrypt()
     total = 0;
     while ((len -= n))
     {
-        if ((n = read(STDIN_FILENO, buf + total, len)) == -1)
+        if ((n = read(STDIN_FILENO, buf + total, len)) > 0)
+        {
+            total += n;
+        }
+        else if (n == -1)
         {
             (void)fprintf(stderr, "%s: read error: %s\n",
                           getprogname(),
                           strerror(errno));
             exit(EXIT_FAILURE);
         }
-        total += n;
+        else
+        {
+            (void)fprintf(stderr, "%s: invalid input\n",
+                          getprogname());
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (strncmp(buf, ENC_PREFIX, strlen(ENC_PREFIX)))
