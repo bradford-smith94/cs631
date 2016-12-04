@@ -19,6 +19,9 @@ void encrypt()
 {
     char buf[BUFSIZ];
     unsigned char out[BUFSIZ];
+    char* tmp;
+    int i;
+    int len;
     int n;
     int out_n;
     int total;
@@ -27,12 +30,32 @@ void encrypt()
 
     privs = genkey(NULL);
 
+    /* write out the prefix */
+    len = strlen(ENC_PREFIX) + SALT_SIZE;
+    if ((tmp = strdup(ENC_PREFIX)) == NULL)
+    {
+        (void)fprintf(stderr, "%s: strdup error: %s\n",
+                      getprogname(),
+                      strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+
+    for (i = 0; i < len; i++)
+    {
+        if (i < strlen(ENC_PREFIX))
+            write(STDOUT_FILENO, &tmp[i], 1);
+        else
+            write(STDOUT_FILENO, &privs.salt[i], 1);
+    }
+    free(tmp);
+
     EVP_CIPHER_CTX_init(&ctx);
     EVP_EncryptInit(&ctx, EVP_aes_256_cbc(), privs.key, privs.iv);
 
     bzero(buf, BUFSIZ);
     bzero(out, BUFSIZ);
 
+    /* encrypt and write stdin */
     while ((n = read(STDIN_FILENO, buf, BUFSIZ)) > 0)
     {
         bzero(out, BUFSIZ);

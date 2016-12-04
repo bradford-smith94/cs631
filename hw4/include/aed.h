@@ -8,6 +8,7 @@
 
 #define AED_PASS "AED_PASS"
 #define ENC_PREFIX "Salted__"
+#define SALT_SIZE 8
 
 struct s_privates
 {

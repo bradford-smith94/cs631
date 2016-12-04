@@ -20,7 +20,7 @@ t_privates genkey(unsigned char* givenSalt)
     char* aed_pass;
     unsigned char key[EVP_MAX_KEY_LENGTH];
     unsigned char iv[EVP_MAX_IV_LENGTH];
-    unsigned char salt[8];
+    unsigned char salt[SALT_SIZE];
     t_privates ret;
 
     if ((aed_pass = getenv(AED_PASS)) == NULL)
@@ -33,7 +33,7 @@ t_privates genkey(unsigned char* givenSalt)
 
     if (givenSalt == NULL)
     {
-        if (!RAND_bytes(salt, 8))
+        if (!RAND_bytes(salt, SALT_SIZE))
         {
             (void)fprintf(stderr, "%s: RAND_bytes failed: %s\n",
                           getprogname(),
