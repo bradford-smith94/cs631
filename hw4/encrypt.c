@@ -1,12 +1,13 @@
 /* Bradford Smith (bsmith8)
  * CS 631 HW 4 encrypt.c
- * 12/03/2016
+ * 12/04/2016
  */
 
 #include "aed.h"
 
 #include <bsd/stdlib.h>
 
+#include <openssl/err.h>
 #include <openssl/evp.h>
 
 #include <errno.h>
@@ -21,6 +22,7 @@ void encrypt()
     unsigned char out[BUFSIZ];
     char* tmp;
     int i;
+    int len;
     int n;
     int out_n;
     int total;
@@ -62,24 +64,39 @@ void encrypt()
 
     EVP_CIPHER_CTX_init(&ctx);
     EVP_EncryptInit(&ctx, EVP_aes_256_cbc(), privs->key, privs->iv);
+    len = EVP_CIPHER_block_size(EVP_aes_256_cbc());
 
     bzero(buf, BUFSIZ);
 
     /* encrypt and write stdin */
-    while ((n = read(STDIN_FILENO, buf, BUFSIZ)) > 0)
+    while ((n = read(STDIN_FILENO, buf, len)) > 0)
     {
+        if (n < len)
+        {
+            /* make sure we got the whole block or are at the end */
+            total = 0;
+            do
+            {
+                total += n;
+            } while ((n = read(STDIN_FILENO, buf + total, len - total)) > 0);
+            n = total;
+        }
+
         bzero(out, BUFSIZ);
 
         if (!EVP_EncryptUpdate(&ctx, out, &out_n, (unsigned char*)buf, n))
         {
-            (void)fprintf(stderr, "%s: error in EVP_EncryptUpdate\n",
-                          getprogname());
+            (void)fprintf(stderr, "%s: error in EVP_EncryptUpdate: %s\n",
+                          getprogname(),
+                          ERR_error_string(ERR_get_error(), NULL));
             exit(EXIT_FAILURE);
         }
+
         if (!EVP_EncryptFinal(&ctx, out + out_n, &total))
         {
-            (void)fprintf(stderr, "%s: error in EVP_EncryptFinal\n",
-                          getprogname());
+            (void)fprintf(stderr, "%s: error in EVP_EncryptFinal: %s\n",
+                          getprogname(),
+                          ERR_error_string(ERR_get_error(), NULL));
             exit(EXIT_FAILURE);
         }
 

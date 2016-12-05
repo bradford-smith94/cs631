@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 HW 4 genkey.c
- * 12/03/2016
+ * 12/04/2016
  */
 
 #include "aed.h"
@@ -32,6 +32,10 @@ t_privates* genkey(unsigned char* givenSalt)
         exit(EXIT_FAILURE);
 
     }
+
+    bzero(ret->key, EVP_MAX_KEY_LENGTH);
+    bzero(ret->iv, EVP_MAX_IV_LENGTH);
+    bzero(ret->salt, SALT_SIZE);
 
     if ((aed_pass = getenv(AED_PASS)) == NULL)
     {

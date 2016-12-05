@@ -1,11 +1,13 @@
 /* Bradford Smith (bsmith8)
  * CS 631 HW 4 aed.c
- * 12/03/2016
+ * 12/04/2016
  */
 
 #include "aed.h"
 
 #include <bsd/stdlib.h>
+
+#include <openssl/err.h>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -20,6 +22,7 @@ int main(int argc, char** argv)
     int opt;
 
     setprogname(argv[0]);
+    ERR_load_crypto_strings();
 
     while ((opt = getopt(argc, argv, "deh")) != -1)
     {
