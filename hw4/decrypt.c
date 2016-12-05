@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 HW 4 decrypt.c
- * 12/04/2016
+ * 12/05/2016
  */
 
 #include "aed.h"
@@ -72,8 +72,26 @@ void decrypt()
     bzero(buf, BUFSIZ);
 
     /* decrypt and write stdin */
-    while ((n = read(STDIN_FILENO, buf, BUFSIZ)) > 0)
+    while ((n = read(STDIN_FILENO, buf, len)) > 0)
     {
+        total = n;
+        while (total != len)
+        {
+            if ((n = read(STDIN_FILENO, buf, len - total)) == 0)
+            {
+                break;
+            }
+            else if (n == -1)
+            {
+                (void)fprintf(stderr, "%s: write error: %s\n",
+                              getprogname(),
+                              strerror(errno));
+                exit(EXIT_FAILURE);
+            }
+            else
+                total += n;
+        }
+        n = total;
         bzero(out, BUFSIZ);
 
         out_n = 0;
@@ -84,17 +102,6 @@ void decrypt()
                           ERR_error_string(ERR_get_error(), NULL));
             exit(EXIT_FAILURE);
         }
-
-        total = 0;
-        if (!EVP_DecryptFinal(&ctx, out + out_n, &total))
-        {
-            (void)fprintf(stderr, "%s: error in EVP_DecryptFinal: %s\n",
-                          getprogname(),
-                          ERR_error_string(ERR_get_error(), NULL));
-            exit(EXIT_FAILURE);
-        }
-
-        out_n += total;
 
         n = 0;
         while ((n = write(STDOUT_FILENO, out + n, out_n - n)) > 0); /* NOTE ; */
@@ -111,6 +118,27 @@ void decrypt()
     if (n == -1)
     {
         (void)fprintf(stderr, "%s: read error: %s\n",
+                      getprogname(),
+                      strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+
+    total = 0;
+    if (!EVP_DecryptFinal(&ctx, out + out_n, &total))
+    {
+        (void)fprintf(stderr, "%s: error in EVP_DecryptFinal: %s\n",
+                      getprogname(),
+                      ERR_error_string(ERR_get_error(), NULL));
+        exit(EXIT_FAILURE);
+    }
+
+    out_n += total;
+
+    n = 0;
+    while ((n = write(STDOUT_FILENO, out + len + n, (out_n - len) - n)) > 0); /* NOTE ; */
+    if (n == -1)
+    {
+        (void)fprintf(stderr, "%s: write error: %s\n",
                       getprogname(),
                       strerror(errno));
         exit(EXIT_FAILURE);

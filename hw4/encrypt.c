@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 HW 4 encrypt.c
- * 12/04/2016
+ * 12/05/2016
  */
 
 #include "aed.h"
@@ -22,7 +22,7 @@ void encrypt()
     unsigned char out[BUFSIZ];
     char* tmp;
     int i;
-    /* int len; */
+    int len;
     int n;
     int out_n;
     int total;
@@ -64,13 +64,31 @@ void encrypt()
 
     EVP_CIPHER_CTX_init(&ctx);
     EVP_EncryptInit(&ctx, EVP_aes_256_cbc(), privs->key, privs->iv);
-    /* len = EVP_CIPHER_block_size(EVP_aes_256_cbc()); */
+    len = EVP_CIPHER_block_size(EVP_aes_256_cbc());
 
     bzero(buf, BUFSIZ);
 
     /* encrypt and write stdin */
-    while ((n = read(STDIN_FILENO, buf, BUFSIZ)) > 0)
+    while ((n = read(STDIN_FILENO, buf, len)) > 0)
     {
+        total = n;
+        while (total != len)
+        {
+            if ((n = read(STDIN_FILENO, buf, len - total)) == 0)
+            {
+                break;
+            }
+            else if (n == -1)
+            {
+                (void)fprintf(stderr, "%s: write error: %s\n",
+                              getprogname(),
+                              strerror(errno));
+                exit(EXIT_FAILURE);
+            }
+            else
+                total += n;
+        }
+        n = total;
         bzero(out, BUFSIZ);
 
         out_n = 0;
@@ -81,17 +99,6 @@ void encrypt()
                           ERR_error_string(ERR_get_error(), NULL));
             exit(EXIT_FAILURE);
         }
-
-        total = 0;
-        if (!EVP_EncryptFinal(&ctx, out + out_n, &total))
-        {
-            (void)fprintf(stderr, "%s: error in EVP_EncryptFinal: %s\n",
-                          getprogname(),
-                          ERR_error_string(ERR_get_error(), NULL));
-            exit(EXIT_FAILURE);
-        }
-
-        out_n += total;
 
         n = 0;
         while ((n = write(STDOUT_FILENO, out + n, out_n - n)) > 0); /* NOTE ; */
@@ -108,6 +115,27 @@ void encrypt()
     if (n == -1)
     {
         (void)fprintf(stderr, "%s: read error: %s\n",
+                      getprogname(),
+                      strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+
+    total = 0;
+    if (!EVP_EncryptFinal(&ctx, out + out_n, &total))
+    {
+        (void)fprintf(stderr, "%s: error in EVP_EncryptFinal: %s\n",
+                      getprogname(),
+                      ERR_error_string(ERR_get_error(), NULL));
+        exit(EXIT_FAILURE);
+    }
+
+    out_n += total;
+
+    n = 0;
+    while ((n = write(STDOUT_FILENO, out + n, out_n - n)) > 0); /* NOTE ; */
+    if (n == -1)
+    {
+        (void)fprintf(stderr, "%s: write error: %s\n",
                       getprogname(),
                       strerror(errno));
         exit(EXIT_FAILURE);
