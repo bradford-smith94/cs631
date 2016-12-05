@@ -19,8 +19,6 @@ t_privates* genkey(unsigned char* givenSalt)
 {
     char* aed_pass;
     int i;
-    unsigned char key[EVP_MAX_KEY_LENGTH];
-    unsigned char iv[EVP_MAX_IV_LENGTH];
     unsigned char salt[SALT_SIZE];
     t_privates* ret;
 
@@ -69,17 +67,13 @@ t_privates* genkey(unsigned char* givenSalt)
                         (unsigned char*)aed_pass,
                         strlen(aed_pass),
                         1,
-                        key,
-                        iv))
+                        ret->key,
+                        ret->iv))
     {
         (void)fprintf(stderr, "%s: EVP_BytesToKey failed\n",
                       getprogname());
         exit(EXIT_FAILURE);
     }
-    for (i = 0; i < EVP_MAX_KEY_LENGTH; i++)
-        ret->key[i] = key[i];
-    for (i = 0; i < EVP_MAX_IV_LENGTH; i++)
-        ret->iv[i] = iv[i];
 
     return ret;
 }
