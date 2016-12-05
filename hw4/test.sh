@@ -1,4 +1,11 @@
-#!/bin/sh
+#!/bin/bash
+
+echo "Building project:"
+make
+echo ""
+
+echo "Running tests:"
+echo ""
 
 echo "simple test:"
 echo "simple test works" | AED_PASS="simpletest" ./aed -e | AED_PASS="simpletest" ./aed -d
@@ -17,3 +24,7 @@ echo ""
 
 rm file.enc
 rm file.dec
+
+echo "Cleaning up:"
+make fclean
+echo ""
