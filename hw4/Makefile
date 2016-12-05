@@ -1,6 +1,6 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 HW 4
-# 12/03/2016
+# 12/04/2016
 ################################################################################
 
 PRG=aed
@@ -35,5 +35,5 @@ fclean: clean
 re: fclean all
 
 tar: fclean
-	tar -cvf $(AUTHOR)-$(PROJECT).tar --transform 's/^\./$(AUTHOR)/' ./*
+	tar -cvf $(AUTHOR)-$(PROJECT).tar --transform 's/^\./$(AUTHOR)/' --exclude 'test.sh' ./*
 
