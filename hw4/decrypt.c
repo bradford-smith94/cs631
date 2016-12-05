@@ -30,6 +30,7 @@ void decrypt()
 
     bzero(buf, BUFSIZ);
 
+    /* read in the prefix */
     len = strlen(ENC_PREFIX) + SALT_SIZE;
     n = 0;
     total = 0;
@@ -71,21 +72,11 @@ void decrypt()
     bzero(buf, BUFSIZ);
 
     /* decrypt and write stdin */
-    while ((n = read(STDIN_FILENO, buf, len)) > 0)
+    while ((n = read(STDIN_FILENO, buf, BUFSIZ)) > 0)
     {
-        if (n < len)
-        {
-            /* make sure we got the whole block or are at the end */
-            total = 0;
-            do
-            {
-                total += n;
-            } while ((n = read(STDIN_FILENO, buf + total, len - total)) > 0);
-            n = total;
-        }
-
         bzero(out, BUFSIZ);
 
+        out_n = 0;
         if (!EVP_DecryptUpdate(&ctx, out, &out_n, (unsigned char*)buf, n))
         {
             (void)fprintf(stderr, "%s: error in EVP_DecryptUpdate: %s\n",
@@ -93,6 +84,8 @@ void decrypt()
                           ERR_error_string(ERR_get_error(), NULL));
             exit(EXIT_FAILURE);
         }
+
+        total = 0;
         if (!EVP_DecryptFinal(&ctx, out + out_n, &total))
         {
             (void)fprintf(stderr, "%s: error in EVP_DecryptFinal: %s\n",

@@ -8,6 +8,7 @@
 #include <bsd/stdlib.h>
 
 #include <openssl/err.h>
+#include <openssl/evp.h>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -23,6 +24,7 @@ int main(int argc, char** argv)
 
     setprogname(argv[0]);
     ERR_load_crypto_strings();
+    OpenSSL_add_all_algorithms();
 
     while ((opt = getopt(argc, argv, "deh")) != -1)
     {
@@ -49,6 +51,8 @@ int main(int argc, char** argv)
         usage();
         return EXIT_FAILURE;
     }
+
+    ERR_free_strings();
 
     return EXIT_SUCCESS;
 }
