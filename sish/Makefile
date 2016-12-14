@@ -1,6 +1,6 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 sish
-# 12/07/2016
+# 12/14/2016
 ################################################################################
 
 PRG=sish
@@ -10,7 +10,7 @@ SRC=main.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
-LDLIBS+=
+LDLIBS+= -lbsd
 LDFLAGS+=
 CFLAGS+= -I./include
 CPPFLAGS+= -pedantic-errors -Wall
