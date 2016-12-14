@@ -19,12 +19,9 @@ int main(int argc, char** argv)
     size_t len;
     char* command;
 
+    init();
+
     command = NULL;
-    gl_exit_code = EXIT_SUCCESS;
-    gl_trace = 0;
-
-    setprogname(NAME);
-
     while ((opt = getopt(argc, argv, "c:x")) != -1)
     {
         switch (opt)

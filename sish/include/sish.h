@@ -14,4 +14,7 @@ char gl_trace;
 
 int main(int, char**);
 
+void init();
+void handleSigInt();
+
 #endif /* _SISH_H_ */

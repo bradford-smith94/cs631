@@ -6,7 +6,7 @@
 PRG=sish
 AUTHOR=bsmith8
 PROJECT=sish
-SRC=main.c
+SRC=main.c handleSigInt.c init.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
