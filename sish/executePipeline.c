@@ -7,6 +7,9 @@
 
 #include <bsd/stdlib.h>
 
+#include <sys/types.h>
+#include <sys/wait.h>
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +24,8 @@
 void executePipeline(char*** pipeline)
 {
     int i;
+    int status;
+    pid_t pid;
 
     /* count pipeline segments */
     for (i = 0; pipeline[i] != NULL; i++);
@@ -92,8 +97,32 @@ void executePipeline(char*** pipeline)
         {
             exit(gl_exit_code);
         }
-        else /* exec */
+        else /* fork and exec */
         {
+            if ((pid = fork()) < 0)
+            {
+                (void)fprintf(stderr, "%s: fork failure: %s\n",
+                              getprogname(),
+                              strerror(errno));
+                exit(EXIT_FAILURE);
+            }
+            else if (pid > 0)
+            {
+                status = EXIT_SUCCESS;
+                waitpid(pid, &status, 0);
+                gl_exit_code = WEXITSTATUS(status);
+            }
+            else
+            {
+                if (execvp(pipeline[0][0], &pipeline[0][0]) == -1)
+                {
+                    (void)fprintf(stderr, "%s: %s: %s\n",
+                                  getprogname(),
+                                  pipeline[0][0],
+                                  strerror(errno));
+                    exit(EXIT_FAILURE);
+                }
+            }
         }
     }
 }
