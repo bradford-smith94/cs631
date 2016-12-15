@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish tokenizePipeline.c
- * 12/14/2016
+ * 12/15/2016
  */
 
 #include "sish.h"
@@ -77,15 +77,6 @@ char*** tokenizePipeline(char* cmd)
 
             pipeline[pipeSegment] = NULL;
             word = 0;
-            if ((pipeline[pipeSegment] =
-                 realloc(pipeline[pipeSegment], (word + 2) * sizeof(char*))) ==
-                 NULL)
-            {
-                (void)fprintf(stderr, "%s: realloc failure: %s\n",
-                              getprogname(),
-                              strerror(errno));
-                exit(EXIT_FAILURE);
-            }
         }
         else
         {
@@ -97,6 +88,16 @@ char*** tokenizePipeline(char* cmd)
                 exit(EXIT_FAILURE);
             }
         }
+
+        if ((pipeline[pipeSegment] =
+             realloc(pipeline[pipeSegment], (word + 2) * sizeof(char*))) ==
+             NULL)
+        {
+            (void)fprintf(stderr, "%s: realloc failure: %s\n",
+                          getprogname(),
+                          strerror(errno));
+            exit(EXIT_FAILURE);
+        }
     }
     pipeline[pipeSegment][word] = NULL;
     pipeline[pipeSegment + 1] = NULL;
@@ -106,8 +107,10 @@ char*** tokenizePipeline(char* cmd)
         for (i = 0; pipeline[i] != NULL; i++)
         {
             (void)fprintf(stderr, "+");
-            for (j = 0; pipeline[i][j] != NULL; j++)
-                (void)fprintf(stderr, "%s ", pipeline[i][j]);
+            if (pipeline[i][0] != NULL)
+                (void)fprintf(stderr, "%s", pipeline[i][0]);
+            for (j = 1; pipeline[i][j] != NULL; j++)
+                (void)fprintf(stderr, " %s", pipeline[i][j]);
             (void)fprintf(stderr, "\n");
         }
     }
