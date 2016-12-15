@@ -1,0 +1,8 @@
+Bradford Smith (bsmith8)
+CS 631 sish README
+12/15/2016
+========================
+
+The program assumes the '$HOME' environment variable is set, although it is not
+mentioned in the manual page this value is used by the 'cd' builtin in order to
+change to the user's home directory.
