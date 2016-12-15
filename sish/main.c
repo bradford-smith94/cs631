@@ -16,8 +16,10 @@
 int main(int argc, char** argv)
 {
     int opt;
+    int n;
     size_t len;
     char* command;
+    char*** pipeline;
 
     init();
 
@@ -44,6 +46,8 @@ int main(int argc, char** argv)
 
     if (command != NULL)
     {
+        /* TODO: free pipeline when done */
+        pipeline = tokenizePipeline(command);
     }
     else
     {
@@ -52,7 +56,7 @@ int main(int argc, char** argv)
             (void)printf(PROMPT_STR);
             len = 0;
             errno = 0;
-            if (getline(&command, &len, stdin) < 0)
+            if ((n = getline(&command, &len, stdin)) < 0)
             {
                 if (errno)
                 {
@@ -69,7 +73,12 @@ int main(int argc, char** argv)
                 }
             }
 
-            /* handle command */
+            command[n - 1] = '\0'; /* remove newline */
+            if (strlen(command))
+            {
+                /* TODO: free pipeline when done */
+                pipeline = tokenizePipeline(command);
+            }
 
             free(command);
             command = NULL;

@@ -23,6 +23,8 @@ char gl_trace;
 
 int main(int, char**);
 
+char*** tokenizePipeline(char*);
+
 void init();
 void handleSigInt();
 

@@ -26,7 +26,7 @@ void handleSigInt()
         exit(EXIT_FAILURE);
     }
 
-    printf("\n");
-    printf(PROMPT_STR);
-    fflush(stdout);
+    (void)printf("\n");
+    (void)printf(PROMPT_STR);
+    (void)fflush(stdout);
 }
