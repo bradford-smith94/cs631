@@ -35,6 +35,8 @@ void executePipeline(char*** pipeline)
     }
     else /* single command */
     {
+        redirectIO(pipeline[0]);
+
         if (!strcmp(pipeline[0][0], CD))
         {
             if (pipeline[0][1] != NULL)
@@ -117,5 +119,7 @@ void executePipeline(char*** pipeline)
                 }
             }
         }
+
+        restoreIO();
     }
 }

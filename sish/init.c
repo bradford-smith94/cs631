@@ -28,6 +28,22 @@ void init()
     gl_exit_code = EXIT_SUCCESS;
     gl_trace = 0;
 
+    if ((gl_saved_stdin = dup(STDIN_FILENO)) == -1)
+    {
+        (void)fprintf(stderr, "%s: dup failure: %s\n",
+                      getprogname(),
+                      strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+
+    if ((gl_saved_stdout = dup(STDOUT_FILENO)) == -1)
+    {
+        (void)fprintf(stderr, "%s: dup failure: %s\n",
+                      getprogname(),
+                      strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+
     setprogname(NAME);
 
     if (signal(SIGINT, handleSigInt) == SIG_ERR)

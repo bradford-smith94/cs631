@@ -1,13 +1,13 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 631 sish
-# 12/14/2016
+# 12/15/2016
 ################################################################################
 
 PRG=sish
 AUTHOR=bsmith8
 PROJECT=sish
 SRC=main.c executePipeline.c freePipeline.c handleSigInt.c init.c \
-	tokenizePipeline.c
+	redirectIO.c restoreIO.c tokenizePipeline.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f
