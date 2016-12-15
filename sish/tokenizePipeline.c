@@ -1,4 +1,4 @@
-/* Bradford Smith
+/* Bradford Smith (bsmith8)
  * CS 631 sish tokenizePipeline.c
  * 12/14/2016
  */
