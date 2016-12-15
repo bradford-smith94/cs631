@@ -76,13 +76,7 @@ void executePipeline(char*** pipeline)
                 }
                 else
                 {
-                    i = 1;
-                    (void)printf("%s", pipeline[0][i++]);
-                    while (pipeline[0][i] != NULL)
-                    {
-                        (void)printf(" %s", pipeline[0][i++]);
-                    }
-                    (void)printf("\n");
+                    (void)printf("%s\n", pipeline[0][1]);
                 }
             }
             else
