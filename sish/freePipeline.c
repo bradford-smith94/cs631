@@ -7,6 +7,9 @@
 
 #include <stdlib.h>
 
+/* pre: takes in an allocated char*** 'pipeline'
+ * post: loops through 'pipeline' and frees each allocated block
+ */
 void freePipeline(char*** pipeline)
 {
     int i;
