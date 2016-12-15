@@ -110,10 +110,9 @@ void executePipeline(char*** pipeline)
             {
                 if (execvp(pipeline[0][0], &pipeline[0][0]) == -1)
                 {
-                    (void)fprintf(stderr, "%s: %s: %s\n",
+                    (void)fprintf(stderr, "%s: %s: command not found\n",
                                   getprogname(),
-                                  pipeline[0][0],
-                                  strerror(errno));
+                                  pipeline[0][0]);
                     exit(EXIT_FAILURE);
                 }
             }
