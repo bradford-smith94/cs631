@@ -6,7 +6,8 @@
 PRG=sish
 AUTHOR=bsmith8
 PROJECT=sish
-SRC=main.c handleSigInt.c init.c tokenizePipeline.c
+SRC=main.c executePipeline.c freePipeline.c handleSigInt.c init.c \
+	tokenizePipeline.c
 OBJ=$(SRC:.c=.o)
 CC=gcc
 RM=rm -f

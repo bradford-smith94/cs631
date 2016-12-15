@@ -48,6 +48,8 @@ int main(int argc, char** argv)
     {
         /* TODO: free pipeline when done */
         pipeline = tokenizePipeline(command);
+        executePipeline(pipeline);
+        freePipeline(pipeline);
     }
     else
     {
@@ -78,6 +80,8 @@ int main(int argc, char** argv)
             {
                 /* TODO: free pipeline when done */
                 pipeline = tokenizePipeline(command);
+                executePipeline(pipeline);
+                freePipeline(pipeline);
             }
 
             free(command);

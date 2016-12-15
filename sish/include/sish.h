@@ -25,6 +25,8 @@ int main(int, char**);
 
 char*** tokenizePipeline(char*);
 
+void executePipeline(char***);
+void freePipeline(char***);
 void init();
 void handleSigInt();
 
