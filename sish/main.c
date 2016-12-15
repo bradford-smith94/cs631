@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish main.c
- * 12/14/2016
+ * 12/15/2016
  */
 
 #include "sish.h"
@@ -46,7 +46,6 @@ int main(int argc, char** argv)
 
     if (command != NULL)
     {
-        /* TODO: free pipeline when done */
         pipeline = tokenizePipeline(command);
         executePipeline(pipeline);
         freePipeline(pipeline);
@@ -78,7 +77,6 @@ int main(int argc, char** argv)
             command[n - 1] = '\0'; /* remove newline */
             if (strlen(command))
             {
-                /* TODO: free pipeline when done */
                 pipeline = tokenizePipeline(command);
                 executePipeline(pipeline);
                 freePipeline(pipeline);

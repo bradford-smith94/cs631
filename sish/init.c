@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish init.c
- * 12/14/2016
+ * 12/15/2016
  */
 
 #include "sish.h"
@@ -51,6 +51,14 @@ void init()
     if (setenv(ENV_SHELL, realpath, 1) == -1)
     {
         (void)fprintf(stderr, "%s: setenv failure: %s\n",
+                      getprogname(),
+                      strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+
+    if ((gl_home_path = getenv(ENV_HOME)) == NULL)
+    {
+        (void)fprintf(stderr, "%s: getenv failure: %s\n",
                       getprogname(),
                       strerror(errno));
         exit(EXIT_FAILURE);
