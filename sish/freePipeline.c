@@ -14,7 +14,7 @@ void freePipeline(char*** pipeline)
 
     for (i = 0; pipeline[i] != NULL; i++)
     {
-        for (j = 0; pipeline[i][j] != NULL; i++)
+        for (j = 0; pipeline[i][j] != NULL; j++)
         {
             free(pipeline[i][j]);
         }
