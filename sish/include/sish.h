@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish sish.h
- * 12/15/2016
+ * 12/16/2016
  */
 
 #ifndef _SISH_H_
@@ -37,6 +37,7 @@ void freePipeline(char***);
 void handleSigInt();
 void init();
 void redirectIO(char**);
+void removeIndex(char**, int);
 void restoreIO();
 
 #endif /* _SISH_H_ */
