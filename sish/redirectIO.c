@@ -59,15 +59,16 @@ void redirectIO(char** command)
             (void)close(fd);
             removeIndex(command, i);
         }
-        else if (!strncmp(command[i], IO_OUT, out_len))
+        else if (!strncmp(command[i], IO_OUT_APPEND, append_len))
         {
             if ((fd =
-                 open(&command[i][out_len], O_WRONLY | O_CREAT, 0644)) == -1)
+                 open(&command[i][append_len],
+                      O_WRONLY | O_APPEND | O_CREAT, 0644)) == -1)
             {
                 (void)fprintf(stderr, "%s: %s: '%s'\n",
                               getprogname(),
                               strerror(errno),
-                              &command[i][out_len]);
+                              &command[i][append_len]);
                 exit(EXIT_FAILURE);
             }
 
@@ -82,15 +83,16 @@ void redirectIO(char** command)
             (void)close(fd);
             removeIndex(command, i);
         }
-        else if (!strncmp(command[i], IO_OUT_APPEND, append_len))
+        else if (!strncmp(command[i], IO_OUT, out_len))
         {
             if ((fd =
-                 open(&command[i][append_len], O_APPEND | O_CREAT, 0644)) == -1)
+                 open(&command[i][out_len],
+                      O_WRONLY | O_TRUNC | O_CREAT, 0644)) == -1)
             {
                 (void)fprintf(stderr, "%s: %s: '%s'\n",
                               getprogname(),
                               strerror(errno),
-                              &command[i][append_len]);
+                              &command[i][out_len]);
                 exit(EXIT_FAILURE);
             }
 

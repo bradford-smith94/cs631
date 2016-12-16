@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish restoreIO.c
- * 12/15/2016
+ * 12/16/2016
  */
 
 #include "sish.h"
@@ -18,6 +18,7 @@
  */
 void restoreIO()
 {
+    (void)close(STDIN_FILENO);
     if (dup2(gl_saved_stdin, STDIN_FILENO) == -1)
     {
         (void)fprintf(stderr, "%s: dup2 failure: %s\n",
@@ -28,6 +29,7 @@ void restoreIO()
 
     (void)fflush(stdin);
 
+    (void)close(STDOUT_FILENO);
     if (dup2(gl_saved_stdout, STDOUT_FILENO) == -1)
     {
         (void)fprintf(stderr, "%s: dup2 failure: %s\n",
