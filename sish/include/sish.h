@@ -35,7 +35,7 @@ int main(int, char**);
 
 char*** tokenizePipeline(char*);
 
-void executeCommand(char**);
+void executeCommand(char**, int);
 void executePipeline(char***);
 void freePipeline(char***);
 void handleSigInt();
