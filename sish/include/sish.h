@@ -21,6 +21,7 @@
 #define NAME "sish"
 #define PROMPT_STR "sish$ "
 
+/* global variables */
 pid_t gl_current_pid;
 unsigned char gl_exit_code;
 char gl_trace;
@@ -28,10 +29,12 @@ char* gl_home_path;
 int gl_saved_stdin;
 int gl_saved_stdout;
 
+/* functions */
 int main(int, char**);
 
 char*** tokenizePipeline(char*);
 
+void executeCommand(char**);
 void executePipeline(char***);
 void freePipeline(char***);
 void handleSigInt();
