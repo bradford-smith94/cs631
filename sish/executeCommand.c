@@ -34,7 +34,7 @@ void executeCommand(char** command)
             if (chdir(command[1]) == -1)
             {
                 (void)fprintf(stderr, "%s: %s\n", CD, strerror(errno));
-                gl_exit_code = EXIT_FAILURE;
+                gl_exit_code = EXIT_NO_EXEC;
             }
             else
                 gl_exit_code = EXIT_SUCCESS;
@@ -44,7 +44,7 @@ void executeCommand(char** command)
             if (chdir(gl_home_path) == -1)
             {
                 (void)fprintf(stderr, "%s: %s\n", CD, strerror(errno));
-                gl_exit_code = EXIT_FAILURE;
+                gl_exit_code = EXIT_NO_EXEC;
             }
             else
                 gl_exit_code = EXIT_SUCCESS;
@@ -101,7 +101,7 @@ void executeCommand(char** command)
                 (void)fprintf(stderr, "%s: %s: command not found\n",
                               getprogname(),
                               command[0]);
-                exit(EXIT_FAILURE);
+                exit(EXIT_NO_EXEC);
             }
         }
     }

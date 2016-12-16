@@ -14,6 +14,7 @@
 #define ENV_HOME "HOME"
 #define ENV_SHELL "SHELL"
 #define EXIT "exit"
+#define EXIT_NO_EXEC 127
 #define EXIT_STATUS_STR "$?"
 #define IO_IN "<"
 #define IO_OUT ">"
