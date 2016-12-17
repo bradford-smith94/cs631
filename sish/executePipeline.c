@@ -24,6 +24,7 @@
 void executePipeline(char*** pipeline)
 {
     int i;
+    int bg;
     int prevIn;
     int pipeSegments;
     int status;
@@ -48,6 +49,16 @@ void executePipeline(char*** pipeline)
 
         for (i = 0; i < pipeSegments; i++)
         {
+            bg = parseBackground(pipeline[i]);
+            if (i != pipeSegments - 1 && bg)
+            {
+                (void)fprintf(stderr,
+                              "%s: cannot background in the middle of a pipe\n",
+                              getprogname());
+                gl_exit_code = EXIT_NO_EXEC;
+                break;
+            }
+
             if (pipe(pipeFd) == -1)
             {
                 (void)fprintf(stderr, "%s: pipe failure: %s\n",
@@ -65,7 +76,31 @@ void executePipeline(char*** pipeline)
             }
             else if (pid > 0) /* parent */
             {
-                pids[i] = pid;
+                if (bg) /* this only happens at the end of pipeline */
+                {
+                    /* end pids early */
+                    pids[i] = (pid_t)0;
+
+                    /* add this pid to gl_bg_pids */
+                    gl_num_bg_pids++;
+                    if ((gl_bg_pids =
+                         (pid_t*)
+                         realloc(gl_bg_pids, (gl_num_bg_pids + 1) * sizeof(pid_t)))
+                         == NULL)
+                    {
+                        (void)fprintf(stderr, "%s: realloc failure: %s\n",
+                                      getprogname(),
+                                      strerror(errno));
+                        exit(EXIT_FAILURE);
+                    }
+
+                    gl_bg_pids[gl_num_bg_pids - 1] = pid;
+                    gl_bg_pids[gl_num_bg_pids] = (pid_t)0;
+                }
+                else
+                {
+                    pids[i] = pid;
+                }
                 (void)close(pipeFd[1]);
                 prevIn = pipeFd[0];
             }
@@ -98,7 +133,8 @@ void executePipeline(char*** pipeline)
                     }
                 }
 
-                executeCommand(pipeline[i], 1);
+                /* TODO: don't pass bg directly? */
+                executeCommand(pipeline[i], 1, bg);
             }
         }
         pids[i] = (pid_t)0;
@@ -115,7 +151,8 @@ void executePipeline(char*** pipeline)
     else /* single command */
     {
         redirectIO(pipeline[0]);
-        executeCommand(pipeline[0], 0);
+        bg = parseBackground(pipeline[0]);
+        executeCommand(pipeline[0], 0, bg);
         restoreIO();
     }
 }

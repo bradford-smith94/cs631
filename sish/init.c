@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish init.c
- * 12/15/2016
+ * 12/17/2016
  */
 
 #include "sish.h"
@@ -27,6 +27,16 @@ void init()
     gl_current_pid = getpid();
     gl_exit_code = EXIT_SUCCESS;
     gl_trace = 0;
+    gl_num_bg_pids = 0;
+
+    if ((gl_bg_pids = (pid_t*)malloc(sizeof(pid_t))) == NULL)
+    {
+        (void)fprintf(stderr, "%s: malloc failure: %s\n",
+                      getprogname(),
+                      strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    gl_bg_pids[0] = (pid_t)0;
 
     if ((gl_saved_stdin = dup(STDIN_FILENO)) == -1)
     {

@@ -1,11 +1,14 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish main.c
- * 12/15/2016
+ * 12/17/2016
  */
 
 #include "sish.h"
 
 #include <bsd/stdlib.h>
+
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include <errno.h>
 #include <stdio.h>
@@ -16,6 +19,7 @@
 int main(int argc, char** argv)
 {
     int opt;
+    int i;
     int n;
     size_t len;
     char* command;
@@ -84,6 +88,18 @@ int main(int argc, char** argv)
 
             free(command);
             command = NULL;
+
+            /* if there are background pids check if they exited */
+            if (gl_bg_pids[0] != 0)
+            {
+                for (i = 0; gl_bg_pids[i] != 0; i++)
+                {
+                    n = EXIT_SUCCESS;
+                    waitpid(gl_bg_pids[i], &n, WNOHANG);
+                    if (WIFEXITED(n))
+                        gl_exit_code = WEXITSTATUS(n);
+                }
+            }
         }
     }
 

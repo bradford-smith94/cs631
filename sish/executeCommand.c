@@ -17,17 +17,18 @@
 #include <unistd.h>
 
 /* pre: takes in a char** 'command' which represents the command to execute as
- *      a char* array and an int 'nofork', 'nofork' should be nonzero if calling
- *      this function from a child process
+ *      a char* array, an int 'nofork', 'nofork' should be nonzero if calling
+ *      this function from a child process, and an int 'bg'
  * post: execute the command represented by 'command', if 'nofork' is nonzero
- *       this will not fork a new process for the command
+ *       this will not fork a new process for the command, and if 'bg' is
+ *       nonzero 'command' will be executed in the background
  */
-void executeCommand(char** command, int nofork)
+void executeCommand(char** command, int nofork, int bg)
 {
     int status;
     pid_t pid;
 
-    if (!strcmp(command[0], CD))
+    if (!strcmp(command[0], CD)) /* ignores bg, happens immediately */
     {
         if (command[1] != NULL)
         {
@@ -62,7 +63,7 @@ void executeCommand(char** command, int nofork)
             }
         }
     }
-    else if (!strcmp(command[0], ECHO))
+    else if (!strcmp(command[0], ECHO)) /* ignores bg, happens immediately */
     {
         if (command[1] != NULL)
         {
@@ -91,8 +92,10 @@ void executeCommand(char** command, int nofork)
     }
     else if (!strcmp(command[0], EXIT))
     {
-        /* exit probably shouldn't be used in pipeline child process */
-        exit(gl_exit_code);
+        if (bg) /* backgrounded exit just exits a subprocess, skip it */
+            gl_exit_code = EXIT_SUCCESS;
+        else /* if used in a pipeline exit only exits the subprocess */
+            exit(gl_exit_code);
     }
     else /* fork and exec */
     {
@@ -117,8 +120,30 @@ void executeCommand(char** command, int nofork)
         else if (pid > 0) /* parent */
         {
             status = EXIT_SUCCESS;
-            waitpid(pid, &status, 0);
-            gl_exit_code = WEXITSTATUS(status);
+            if (bg) /* add pid to gl_bg_pids */
+            {
+                gl_num_bg_pids++;
+                if ((gl_bg_pids =
+                     (pid_t*)
+                     realloc(gl_bg_pids, (gl_num_bg_pids + 1) * sizeof(pid_t)))
+                     == NULL)
+                {
+                    (void)fprintf(stderr, "%s: realloc failure: %s\n",
+                                  getprogname(),
+                                  strerror(errno));
+                    exit(EXIT_FAILURE);
+                }
+
+                gl_bg_pids[gl_num_bg_pids - 1] = pid;
+                gl_bg_pids[gl_num_bg_pids] = (pid_t)0;
+
+                gl_exit_code = status;
+            }
+            else /* wait for pid */
+            {
+                waitpid(pid, &status, 0);
+                gl_exit_code = WEXITSTATUS(status);
+            }
         }
         else /* child */
         {
