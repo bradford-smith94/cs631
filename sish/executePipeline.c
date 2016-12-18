@@ -133,8 +133,10 @@ void executePipeline(char*** pipeline)
                     }
                 }
 
-                /* TODO: don't pass bg directly? */
-                executeCommand(pipeline[i], 1, bg);
+                redirectIO(pipeline[i]);
+
+                /* don't pass bg, handle that here for pipelined commands */
+                executeCommand(pipeline[i], 1, 0);
             }
         }
         pids[i] = (pid_t)0;
