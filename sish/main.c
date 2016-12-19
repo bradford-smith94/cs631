@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish main.c
- * 12/17/2016
+ * 12/19/2016
  */
 
 #include "sish.h"
@@ -44,6 +44,8 @@ int main(int argc, char** argv)
             case 'x':
                 gl_trace = 1;
                 break;
+            case '?':
+                return EXIT_FAILURE;
         }
     }
     /* TODO add check that no other parameters are given? */
