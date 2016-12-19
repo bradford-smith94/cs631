@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish tokenizePipeline.c
- * 12/15/2016
+ * 12/19/2016
  */
 
 #include "sish.h"
@@ -107,9 +107,7 @@ char*** tokenizePipeline(char* cmd)
         for (i = 0; pipeline[i] != NULL; i++)
         {
             (void)fprintf(stderr, "+");
-            if (pipeline[i][0] != NULL)
-                (void)fprintf(stderr, "%s", pipeline[i][0]);
-            for (j = 1; pipeline[i][j] != NULL; j++)
+            for (j = 0; pipeline[i][j] != NULL; j++)
                 (void)fprintf(stderr, " %s", pipeline[i][j]);
             (void)fprintf(stderr, "\n");
         }
