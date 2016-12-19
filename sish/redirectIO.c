@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish redirectIO.c
- * 12/16/2016
+ * 12/19/2016
  */
 
 #include "sish.h"
@@ -57,7 +57,7 @@ void redirectIO(char** command)
             }
 
             (void)close(fd);
-            removeIndex(command, i);
+            removeIndex(command, i--); /* decrement i so as not to skip next */
         }
         else if (!strncmp(command[i], IO_OUT_APPEND, append_len))
         {
@@ -81,7 +81,7 @@ void redirectIO(char** command)
             }
 
             (void)close(fd);
-            removeIndex(command, i);
+            removeIndex(command, i--); /* decrement i so as not to skip next */
         }
         else if (!strncmp(command[i], IO_OUT, out_len))
         {
@@ -105,7 +105,7 @@ void redirectIO(char** command)
             }
 
             (void)close(fd);
-            removeIndex(command, i);
+            removeIndex(command, i--); /* decrement i so as not to skip next */
         }
     }
 }
