@@ -1,8 +1,83 @@
 Bradford Smith (bsmith8)
 CS 631 sish README
-12/15/2016
+12/19/2016
 ========================
 
 The program assumes the '$HOME' environment variable is set, although it is not
 mentioned in the manual page this value is used by the 'cd' builtin in order to
 change to the user's home directory.
+
+I refrained from adding a usage message (for instance if a user includes an
+argument that is not a flag checked by getopt like `./sish file`) because the
+specification did not mention adding a usage message. So sish will ignore any
+extra arguments like this. Invalid options that _are_ checked by getopt will
+exit with an error message provided by getopt.
+
+Testing
+-------
+
+For testing I compared the output and behavior of my simple shell to that of
+bash. I tested the examples provided in the manual page to make sure it met
+requirements.
+
+One of the things bash does that sish doesn't is print the PID of a background
+process when backgrounding it. The manual page did not specify whether or not
+sish was to do this so I assumed not because of the requirements "not generate
+output other than that which was requested" and "_not_ add additional features
+that are not in the specification".
+
+Some other tests I tried include:
+
+    sish$ ^C
+
+        and
+
+    sish$ yes ^C
+        (Ctrl-C doesn't close the shell by itself but will successfully
+        terminate commands such as 'yes')
+
+    sish$ echo test | echo
+        (This produced an empty line, as bash does, because echo doesn't read
+        stdin)
+
+    sish$ echo test | wc -l <file | cat
+        (This produces the line count of 'file' instead of '1', the lines of the
+        literal 'test'. Bash allows I/O redirection in a pipeline so I allowed
+        sish to match that behavior as it wasn't specified what an illegal I/O
+        redirection was)
+
+    sish$ cat <file >file
+        (This truncates 'file' the same as bash does, again bash didn't specify
+        that this was illegal so I implemented it)
+
+    sish$ ping google.com -c 10&
+        (Which immediately printed the prompt again but still filled the screen
+        with ping output, as expected)
+
+    sish$ echo test | wc -l& | cat
+        (This produces an error in bash, so it does in sish as well)
+
+    sish$ echo test | wc -l | cat&
+        (This however works just fine)
+
+    $ ./sish -c cat /etc/passwd
+
+        and
+
+    $ ./sish -c 'cat /etc/passwd'
+        (This required quotes around the command argument as expected because
+        the shell running sish needed to send the command as one parameter in
+        order for sish to execute it properly)
+
+    sish$ exit&
+        (This exits a child process and keeps the shell open, the same as bash
+        does)
+
+    sish$ exit | cat
+        (Also doesn't exit the shell, like bash)
+
+    $ ./sish file
+        (This ignores 'file' and starts sish normally)
+
+    $ ./sish -c date file
+        (This also ignores 'file' and executes 'date' normally)
