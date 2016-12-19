@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 631 sish executeCommand.c
- * 12/17/2016
+ * 12/19/2016
  */
 
 #include "sish.h"
@@ -103,9 +103,7 @@ void executeCommand(char** command, int nofork, int bg)
         {
             if (execvp(command[0], &command[0]) == -1)
             {
-                (void)fprintf(stderr, "%s: %s: command not found\n",
-                              getprogname(),
-                              command[0]);
+                (void)fprintf(stderr, "%s: command not found\n", command[0]);
                 exit(EXIT_NO_EXEC);
             }
         }
@@ -149,9 +147,7 @@ void executeCommand(char** command, int nofork, int bg)
         {
             if (execvp(command[0], &command[0]) == -1)
             {
-                (void)fprintf(stderr, "%s: %s: command not found\n",
-                              getprogname(),
-                              command[0]);
+                (void)fprintf(stderr, "%s: command not found\n", command[0]);
                 exit(EXIT_NO_EXEC);
             }
         }

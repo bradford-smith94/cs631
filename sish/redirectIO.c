@@ -34,7 +34,6 @@ void redirectIO(char** command)
     out_len = strlen(IO_OUT);
     append_len = strlen(IO_OUT_APPEND);
 
-    /* TODO: check for illegal combinations */
     for (i = 1; command[i] != NULL; i++)
     {
         if (!strncmp(command[i], IO_IN, in_len))
