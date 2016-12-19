@@ -50,7 +50,7 @@ char*** tokenizePipeline(char* cmd)
         exit(EXIT_FAILURE);
     }
 
-    token = strtok(cmd, " ");
+    token = strtok(cmd, " \t");
     if ((pipeline[pipeSegment][word++] = strdup(token)) == NULL)
     {
         (void)fprintf(stderr, "%s: strdup failure: %s\n",
@@ -59,7 +59,7 @@ char*** tokenizePipeline(char* cmd)
         exit(EXIT_FAILURE);
     }
 
-    while ((token = strtok(NULL, " ")) != NULL)
+    while ((token = strtok(NULL, " \t")) != NULL)
     {
         if (!strcmp(token, "|"))
         {
